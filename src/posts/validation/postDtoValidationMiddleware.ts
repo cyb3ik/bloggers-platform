@@ -22,9 +22,12 @@ const contentValidation =
     .isLength({max: 1000}).withMessage('Content length must not be greater than 1000')
 
 const blogIdValidation = 
-    body('blogId').optional()
-    .isString().withMessage('BlogId must be a string')
+    body('blogId')
+    .optional()
+    .isString().withMessage('Id must be a string')
+    .trim()
     .isMongoId().withMessage('Invalid format of ID')
+    
 
 export const postDtoValidationMiddleware = [
     titleValidation,
