@@ -1,6 +1,5 @@
 import { defaultPaginationParameters } from "../middlewares/validation/queryPaginationValidationMiddleware";
 import { paginatedInput } from "./paginationTypes";
-import { Request, Response } from "express"
 
 export const paginationSetDefaults = <S>(query: Partial<paginatedInput<S>>): paginatedInput<S> => {
     return {

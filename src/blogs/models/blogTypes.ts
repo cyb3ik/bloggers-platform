@@ -38,4 +38,4 @@ export enum BlogSortAttributes {
     isMembership = 'isMembership'
 }
 
-export type PaginationBlogQuery = paginatedInput<BlogSortAttributes>
+export type PaginationBlogQuery = paginatedInput<BlogSortAttributes> & Partial<{searchNameTerm: string}>

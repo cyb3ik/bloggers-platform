@@ -7,7 +7,7 @@ import { errorsHandler } from "../../../core/errors/errors-handler"
 import { matchedData } from "express-validator"
 import { paginationSetDefaults } from "../../../core/pagination/paginationSetDefaults"
 
-export const readAllBlogs = async (req: Request, res: Response) => {
+export async function readAllBlogs(req: Request, res: Response) {
     try {
         const sanitizedQuery = matchedData<PaginationBlogQuery>(req, {
             locations: ['query'],

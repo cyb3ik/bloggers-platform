@@ -9,7 +9,7 @@ export const blogsService = {
     async findAll(query: PaginationBlogQuery): Promise<{totalCount: number, items: WithId<RawBlog>[]}> {
         return blogsRepository.findAllBlogs(query)
     },
-
+    
     async findById(id: string): Promise<WithId<RawBlog>> {
         return blogsRepository.findBlog(id)
     },

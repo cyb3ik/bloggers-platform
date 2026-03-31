@@ -9,19 +9,25 @@ export const blogsRepository = {
     async findAllBlogs(query: PaginationBlogQuery): Promise<{ 
         totalCount: number, 
         items: WithId<RawBlog>[] }> {
-            const {pageNumber, pageSize, sortBy, sortDirection } = query
+            const {pageNumber, pageSize, sortBy, sortDirection, searchNameTerm } = query
 
             const skip = Math.ceil((pageNumber - 1) * pageSize)
 
             const limit = pageSize
 
+            const filter: any = {}
+
+            if (searchNameTerm) {
+                filter.name = { $regex: searchNameTerm, $options: 'i'}
+            }
+
             const items = await blogsCollection
-                .find({})
+                .find(filter)
                 .sort( {[sortBy]: sortDirection} )
                 .skip(skip)
                 .limit(limit)
                 .toArray()
-            const totalCount = await blogsCollection.countDocuments({})
+            const totalCount = await blogsCollection.countDocuments(filter)
 
             return {totalCount: totalCount, items: items}
     },
@@ -80,7 +86,7 @@ export const blogsRepository = {
     },
 
     async deleteBlog(id: string): Promise<void> {
-        const deleteResult = await blogsCollection.deleteOne( { id: id } )    
+        const deleteResult = await blogsCollection.deleteOne( { _id: new ObjectId(id) } )    
 
         if (deleteResult.deletedCount < 1) {
             throw new NotFoundError('Blog not found')

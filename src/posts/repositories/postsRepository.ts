@@ -27,7 +27,6 @@ export const postsRepository = {
         },
     
     async findPost(id: string): Promise<WithId<RawPost>> {
-
         const result = await postsCollection.findOne( { _id: new ObjectId(id) } )
 
         if (!result) {
