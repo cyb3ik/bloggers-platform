@@ -7,7 +7,7 @@ export const POSTS_PATH = '/bloggers-platform/api/posts'
 export const USERS_PATH = '/bloggers-platform/api/users'
 export const AUTH_PATH = '/bloggers-platform/api/auth'
 
-export const mongoUrl = process.env.MONGO_URL || 'mongodb+srv://admin:1234pass@cluster0.sbxkzzw.mongodb.net/?appName=Cluster0'
+export const mongoUrl = process.env.MONGO_URL
 
 export const PORT = process.env.PORT || 5002
 
