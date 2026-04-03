@@ -17,12 +17,16 @@ export const usersRepository = {
 
             const filter: any = {}
 
+            if (searchEmailTerm || searchLoginTerm) {
+                filter.$or = []
+            }
+
             if (searchLoginTerm) {
-                filter.login = { $regex: searchLoginTerm, $options: 'i'}
+                filter.$or.push({ login: { $regex: searchLoginTerm, $options: 'i'}})
             }
 
             if (searchEmailTerm) {
-                filter.email = { $regex: searchEmailTerm, $options: 'i'}
+                filter.$or.push({ email: { $regex: searchEmailTerm, $options: 'i'}})
             }
 
             const items = await usersCollection
