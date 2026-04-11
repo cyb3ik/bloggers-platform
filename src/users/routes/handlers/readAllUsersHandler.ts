@@ -5,7 +5,7 @@ import { errorsHandler } from "../../../core/errors/errors-handler"
 import { matchedData } from "express-validator"
 import { paginationSetDefaults } from "../../../core/pagination/paginationSetDefaults"
 import { PaginationUserQuery } from "../../models/userTypes"
-import { usersService } from "../../application/users.service"
+import { usersQueryService } from "../../domain/users.query.service"
 
 export const readAllUsers = async (req: Request, res: Response) => {
 try {
@@ -16,7 +16,7 @@ try {
 
         const inputQuery = paginationSetDefaults(sanitizedQuery)
 
-        const {items, totalCount} = await usersService.findAll(inputQuery)
+        const {items, totalCount} = await usersQueryService.findAll(inputQuery)
 
         const result = {
             pagesCount: Math.ceil(totalCount / inputQuery.pageSize),

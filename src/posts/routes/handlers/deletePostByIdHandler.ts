@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
-import { postsService } from "../../application/posts.service"
+import { postsService } from "../../domain/posts.service"
 import { errorsHandler } from "../../../core/errors/errors-handler"
 
 export const deletePostById = async (req: Request, res: Response) => {

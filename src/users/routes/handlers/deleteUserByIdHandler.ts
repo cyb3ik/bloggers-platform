@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
 import { errorsHandler } from "../../../core/errors/errors-handler"
-import { usersService } from "../../application/users.service"
+import { usersService } from "../../domain/users.service"
 
 export const deleteUserById = async (req: Request, res: Response) => {
     try {

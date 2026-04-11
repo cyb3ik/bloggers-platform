@@ -1,23 +1,10 @@
-import { WithId } from "mongodb";
 import { blogsRepository } from "../repositories/blogsRepository";
-import { BlogInputModel, BlogPostInputModel, PaginationBlogQuery, RawBlog } from "../models/blogTypes"
-import { PaginationPostQuery, RawPost } from "../../posts/models/postTypes";
+import { BlogInputModel, BlogPostInputModel, RawBlog } from "../models/blogTypes"
+import { RawPost } from "../../posts/models/postTypes";
 import { postsRepository } from "../../posts/repositories/postsRepository";
+import { blogsQyRepository } from "../repositories/blogsQyRepository";
 
 export const blogsService = {
-
-    async findAll(query: PaginationBlogQuery): Promise<{totalCount: number, items: WithId<RawBlog>[]}> {
-        return blogsRepository.findAllBlogs(query)
-    },
-    
-    async findById(id: string): Promise<WithId<RawBlog>> {
-        return blogsRepository.findBlog(id)
-    },
-
-    async findBlogPosts(blogId: string, query: PaginationPostQuery): Promise<{totalCount: number, items: WithId<RawPost>[]}> {
-        const foundBlog = await blogsRepository.findBlog(blogId)
-        return blogsRepository.findBlogPosts(String(foundBlog._id), query)
-    },
 
     async create(body: BlogInputModel): Promise<string> {
         const newBlog: RawBlog = {
@@ -43,12 +30,10 @@ export const blogsService = {
     },
 
     async update(id: string, dto: BlogInputModel): Promise<void> {
-        await blogsRepository.updateBlog(id, dto)
-        return
+        return await blogsRepository.updateBlog(id, dto)
     },
 
     async delete(id: string): Promise<void> {
-        await blogsRepository.deleteBlog(id)
-        return
+        return await blogsRepository.deleteBlog(id)
     }
 }

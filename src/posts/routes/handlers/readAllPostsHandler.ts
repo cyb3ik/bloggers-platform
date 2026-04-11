@@ -1,12 +1,11 @@
 import { Request, Response } from "express"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
-import { WithId } from "mongodb"
 import { PaginationPostQuery, RawPost } from "../../models/postTypes"
 import { mapPostToOutput } from "../../models/mapPostToOutput"
-import { postsService } from "../../application/posts.service"
 import { errorsHandler } from "../../../core/errors/errors-handler"
 import { matchedData } from "express-validator"
 import { paginationSetDefaults } from "../../../core/pagination/paginationSetDefaults"
+import { postsQueryService } from "../../domain/posts.query.service"
 
 export const readAllPosts = async (req: Request, res: Response) => {
 try {
@@ -17,7 +16,7 @@ try {
 
         const inputQuery = paginationSetDefaults(sanitizedQuery)
 
-        const {items, totalCount} = await postsService.findAll(inputQuery)
+        const {items, totalCount} = await postsQueryService.findAll(inputQuery)
 
         const result = {
             pagesCount: Math.ceil(totalCount / inputQuery.pageSize),

@@ -1,11 +1,11 @@
 import { Request, Response } from "express"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
-import { blogsService } from "../../application/blogs.service"
 import { PaginationBlogQuery} from "../../models/blogTypes"
 import { mapBlogToOutput } from "../../models/mapBlogToOutput"
 import { errorsHandler } from "../../../core/errors/errors-handler"
 import { matchedData } from "express-validator"
 import { paginationSetDefaults } from "../../../core/pagination/paginationSetDefaults"
+import { blogsQueryService } from "../../domain/blogs.query.service"
 
 export async function readAllBlogs(req: Request, res: Response) {
     try {
@@ -16,7 +16,7 @@ export async function readAllBlogs(req: Request, res: Response) {
 
         const inputQuery = paginationSetDefaults(sanitizedQuery)
 
-        const {items, totalCount} = await blogsService.findAll(inputQuery)
+        const {items, totalCount} = await blogsQueryService.findAll(inputQuery)
 
         const result = {
             pagesCount: Math.ceil(totalCount / inputQuery.pageSize),

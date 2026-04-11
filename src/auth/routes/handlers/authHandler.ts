@@ -1,13 +1,17 @@
 import { Request, Response } from "express"
-import { usersService } from "../../../users/application/users.service"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
+import { usersQueryService } from "../../../users/domain/users.query.service"
+import { jwtService } from "../../../users/application/jwt.service"
 
 export const authHandler = async (req: Request, res: Response) => {
-    const credentialsCheckResult = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
+    const user = await usersQueryService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
-    if (!credentialsCheckResult) {
+    if (!user) {
         res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
+        return
     }
+    
+    const token = jwtService.createJWT(user)
 
-    res.sendStatus(HTTPStatusCode.NO_CONTENT)
+    res.status(HTTPStatusCode.OK).send(token)
 }
