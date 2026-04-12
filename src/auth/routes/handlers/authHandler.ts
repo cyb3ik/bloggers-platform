@@ -13,5 +13,10 @@ export const authHandler = async (req: Request, res: Response) => {
     
     const token = jwtService.createJWT(user)
 
+    if (!token) {
+        res.sendStatus(HTTPStatusCode.INTERNAL_SERVER_ERROR)
+        return
+    }
+
     res.status(HTTPStatusCode.OK).send(token)
 }
