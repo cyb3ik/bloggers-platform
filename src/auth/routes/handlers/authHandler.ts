@@ -8,8 +8,8 @@ export const authHandler = async (req: Request, res: Response) => {
 
     if (user) {
         const token = await jwtService.createJWT(user)
-        res.status(HTTPStatusCode.OK).send({accessToken: token})
+        return res.status(HTTPStatusCode.OK).send({accessToken: token})
     } else {
-        res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
+        return res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
     }
 }
