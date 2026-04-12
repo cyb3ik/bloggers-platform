@@ -8,15 +8,9 @@ export const authHandler = async (req: Request, res: Response) => {
 
     if (!user) {
         res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
-        return
     }
     
-    const token = jwtService.createJWT(user)
-
-    if (!token) {
-        res.sendStatus(HTTPStatusCode.INTERNAL_SERVER_ERROR)
-        return
-    }
+    const token = jwtService.createJWT(user!)
 
     res.status(HTTPStatusCode.OK).send(token)
 }
