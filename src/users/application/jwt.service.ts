@@ -5,7 +5,7 @@ import { JWT_SECRET } from "../../core/settings/config"
 
 export const jwtService = {
 
-    createJWT(user: WithId<RawUser>): string {
+    async createJWT(user: WithId<RawUser>): Promise<string> {
         const token = jwt.sign({userId: user._id.toString()}, JWT_SECRET, {expiresIn: '1h'})
         return token
     },

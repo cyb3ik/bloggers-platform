@@ -6,11 +6,10 @@ import { jwtService } from "../../../users/application/jwt.service"
 export const authHandler = async (req: Request, res: Response) => {
     const user = await usersQueryService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
-    if (!user) {
+    if (user) {
+        const token = await jwtService.createJWT(user!)
+        res.status(HTTPStatusCode.OK).send(token)
+    } else {
         res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
     }
-    
-    const token = jwtService.createJWT(user!)
-
-    res.status(HTTPStatusCode.OK).send(token)
 }
