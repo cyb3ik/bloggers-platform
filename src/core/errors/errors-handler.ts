@@ -5,6 +5,7 @@ import { NotFoundError } from "./not-found-error"
 import { NotUniqueError } from './not-unique-error'
 import { AlreadyConfirmedError } from './confirmation-error'
 import { EmailError } from './email-error'
+import { LoginError } from './login-error'
 
 export const errorsHandler = (e: unknown, res: Response): void => {
     if (e instanceof NotFoundError) {
@@ -35,6 +36,17 @@ export const errorsHandler = (e: unknown, res: Response): void => {
                 {
                     message: e.message,
                     field: 'email'
+                }
+            ]
+        ))
+    }
+
+    if (e instanceof LoginError) {
+        res.status(HTTPStatusCode.BAD_REQUEST).send(createErrorsMessages(
+            [
+                {
+                    message: e.message,
+                    field: 'login'
                 }
             ]
         ))

@@ -69,12 +69,14 @@ export const usersQyRepository = {
         return result
     },
 
-    async findUserByEmail(email: string): Promise<WithId<RawUser>> {
+    async findUserByEmail(email: string): Promise<WithId<RawUser> | null> {
         const result = await usersCollection.findOne( { email: email })
+    
+        return result
+    },
 
-        if (!result) {
-            throw new EmailError('User with such email not found')
-        }
+    async findUserByLogin(login: string): Promise<WithId<RawUser> | null> {
+        const result = await usersCollection.findOne( { login: login })
     
         return result
     }

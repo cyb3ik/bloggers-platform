@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+
 import bcrypt from "bcrypt"
 import {add} from "date-fns/add"
 import { usersRepository } from "../../users/repositories/usersRepository";
@@ -6,10 +7,22 @@ import { mailService } from "../../users/adapters/mailService";
 import { RawUser, UserInputModel } from "../../users/models/userTypes";
 import { usersQyRepository } from "../../users/repositories/usersQyRepository";
 import { AlreadyConfirmedError } from "../../core/errors/confirmation-error";
+import { EmailError } from "../../core/errors/email-error";
+import { LoginError } from "../../core/errors/login-error";
 
 export const authService = {
     async registerUser(body: UserInputModel): Promise<void> {
-        await usersQyRepository.findUserByEmail(body.email)
+        const userByEmail = await usersQyRepository.findUserByEmail(body.email)
+
+        if (userByEmail) {
+            throw new EmailError('User with such email already exists')
+        }
+
+        const userByLogin = await usersQyRepository.findUserByLogin(body.login)
+
+        if (userByLogin) {
+            throw new LoginError('User with such login already exists')
+        }
 
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await bcrypt.hash(body.password, passwordSalt)
@@ -37,8 +50,12 @@ export const authService = {
     async resendConfirmationCode(email: string): Promise<void> {
         const user = await usersQyRepository.findUserByEmail(email)
 
+        if (!user) {
+            throw new EmailError('User with such email was not found')
+        }
+
         if (user.emailConfirmation.isConfirmed) {
-            throw new AlreadyConfirmedError('Email already confirmed')
+            throw new EmailError('Email already confirmed')
         }
 
         const newConfirmationInfo =  {
