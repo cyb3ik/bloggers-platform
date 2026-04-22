@@ -7,7 +7,7 @@ export const resendHandler = async (req: Request, res: Response) => {
     try {
         await authService.resendConfirmationCode(req.body.email)
 
-        res.sendStatus(HTTPStatusCode.NO_CONTENT)
+        return res.sendStatus(HTTPStatusCode.NO_CONTENT)
     }
     catch(e) {
         errorsHandler(e, res)

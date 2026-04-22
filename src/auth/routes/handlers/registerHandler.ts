@@ -7,7 +7,7 @@ export const registerHandler = async (req: Request, res: Response) => {
     try {
         await authService.registerUser(req.body)
 
-        res.sendStatus(HTTPStatusCode.NO_CONTENT)
+        return res.sendStatus(HTTPStatusCode.NO_CONTENT)
     }
     catch(e) {
         errorsHandler(e, res)
