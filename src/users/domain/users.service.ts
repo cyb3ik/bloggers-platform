@@ -1,6 +1,7 @@
 import { RawUser, UserInputModel } from "../models/userTypes";
 import { usersRepository } from "../repositories/usersRepository";
 import bcrypt from "bcrypt"
+import {randomUUID} from "crypto"
 
 export const usersService = {
 
@@ -15,7 +16,12 @@ export const usersService = {
             email: body.email,
             createdAt: new Date().toISOString(),
             passwordSalt: passwordSalt,
-            passwordHash: passwordHash
+            passwordHash: passwordHash,
+            emailConfirmation: {
+                confirmationCode: randomUUID(),
+                expirationDate: new Date(),
+                isConfirmed: true
+            }
         }
 
         return await usersRepository.createUser(newUser)

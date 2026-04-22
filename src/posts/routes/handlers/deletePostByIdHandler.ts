@@ -5,7 +5,7 @@ import { errorsHandler } from "../../../core/errors/errors-handler"
 
 export const deletePostById = async (req: Request, res: Response) => {
     try {
-        await postsService.delete(String(req.params.id))
+        await postsService.deletePostById(String(req.params.id))
 
         res.sendStatus(HTTPStatusCode.NO_CONTENT)
     }

@@ -6,10 +6,10 @@ import { commentsQueryService } from "../../domain/comments.query.service"
 
 export const updateCommentById = async (req: Request, res: Response) => {
     try {
-        const comment = await commentsQueryService.findComment(req.params.id.toString())
+        const comment = await commentsQueryService.findCommentById(req.params.id.toString())
 
         if (comment.commentatorInfo.userId === req.user._id.toString()) {
-            await commentsService.update(String(req.params.id), req.body)
+            await commentsService.updateCommentById(String(req.params.id), req.body)
 
             return res.sendStatus(HTTPStatusCode.NO_CONTENT)
         }

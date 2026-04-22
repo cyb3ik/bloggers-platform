@@ -8,9 +8,10 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node", "jest"]
   },
   "files": ["index.d.ts"],
-  "include": ["src/**/*", "old/src/blogDtoValidationMiddleware.ts"],
+  "include": ["src/**/*"],
   //"exclude": ["__tests__", "dist", "node_modules"]
 }

@@ -10,10 +10,14 @@ export const AUTH_PATH = '/bloggers-platform/api/auth'
 
 
 export const mongoUrl = process.env.MONGO_URL
+export const DB_NAME = process.env.DB_NAME
 
-export const PORT = process.env.PORT || 5002
+export const PORT = process.env.PORT
 
-export const adminUserName = process.env.ADMIN_USERNAME || 'admin'
-export const adminPass = process.env.ADMIN_PASSWORD || 'qwerty'
+export const adminUserName = process.env.ADMIN_USERNAME
+export const adminPass = process.env.ADMIN_PASSWORD
 
-export const JWT_SECRET = process.env.JWT_SECRET || '123'
+export const JWT_SECRET = process.env.JWT_SECRET
+
+export const EMAIL = process.env.EMAIL
+export const EMAIL_PASS = process.env.EMAIL_PASS

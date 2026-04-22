@@ -11,7 +11,7 @@ export const blogsRepository = {
         return insertedResult.insertedId.toString()
     },
 
-    async updateBlog(id: string, body: BlogInputModel): Promise<void> {
+    async updateBlogById(id: string, body: BlogInputModel): Promise<void> {
         const updateResult = await blogsCollection.updateOne( 
             { _id: new ObjectId(id) },
             { 
@@ -28,7 +28,7 @@ export const blogsRepository = {
         }
     },
 
-    async findBlog(id: string): Promise<WithId<RawBlog>> {
+    async findBlogById(id: string): Promise<WithId<RawBlog>> {
         const foundBlog = await blogsCollection.findOne( {_id: new ObjectId(id)} )
 
         if (!foundBlog) {
@@ -38,7 +38,7 @@ export const blogsRepository = {
         return foundBlog
     },
 
-    async deleteBlog(id: string): Promise<void> {
+    async deleteBlogById(id: string): Promise<void> {
         const deleteResult = await blogsCollection.deleteOne( { _id: new ObjectId(id) } )    
 
         if (deleteResult.deletedCount < 1) {

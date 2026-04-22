@@ -48,10 +48,12 @@ export function paginationAndSortingValidation<T extends string>(
       .optional()
       .isString()
       .withMessage('Search name term must be a string'),
+
     query('searchLoginTerm')
       .optional()
       .isString()
       .withMessage('Search login term must be a string'),
+      
     query('searchEmailTerm')
       .optional()
       .isString()

@@ -12,7 +12,7 @@ export const postsRepository = {
         return insertedResult.insertedId.toString()
     },
 
-    async findPost(id: string): Promise<WithId<RawPost>> {
+    async findPostById(id: string): Promise<WithId<RawPost>> {
         const foundPost = await postsCollection.findOne( {_id: new ObjectId(id)} )
 
         if (!foundPost) {
@@ -22,7 +22,7 @@ export const postsRepository = {
         return foundPost
     },
 
-    async updatePost(id: string, body: PostInputModel): Promise<void> {
+    async updatePostById(id: string, body: PostInputModel): Promise<void> {
         const updateResult = await postsCollection.updateOne( 
             { _id: new ObjectId(id) },
             { 
@@ -42,7 +42,7 @@ export const postsRepository = {
         return
     },
 
-    async deletePost(id: string): Promise<void> {
+    async deletePostById(id: string): Promise<void> {
         const deleteResult = await postsCollection.deleteOne( { _id: new ObjectId(id) } )    
 
         if (deleteResult.deletedCount < 1) {

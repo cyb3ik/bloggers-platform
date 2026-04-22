@@ -6,10 +6,10 @@ import { blogsCollection } from "../db/mongo.db"
 export const testingRouter = Router()
 
 testingRouter
-    .delete("/all-data", (req: Request, res: Response) =>{
-        postsCollection.deleteMany({})
-        blogsCollection.deleteMany({})
-        usersCollection.deleteMany({})
-        commentsCollection.deleteMany({})
+    .delete("/all-data", async (req: Request, res: Response) =>{
+        await postsCollection.deleteMany({})
+        await blogsCollection.deleteMany({})
+        await usersCollection.deleteMany({})
+        await commentsCollection.deleteMany({})
         res.sendStatus(HTTPStatusCode.NO_CONTENT)
     })

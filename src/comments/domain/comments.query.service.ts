@@ -5,12 +5,12 @@ import { postsQyRepository } from "../../posts/repositories/postsQyRepository"
 
 export const commentsQueryService = {
 
-    async findComment(id: string): Promise<WithId<RawComment>> {
+    async findCommentById(id: string): Promise<WithId<RawComment>> {
         return commentsQyRepository.findCommentById(id)
     },
 
     async findPostComments(postId: string, query: PaginationCommentQuery): Promise<{totalCount: number, items: WithId<RawComment>[]}> {
-        const foundPost = await postsQyRepository.findPost(postId)
+        const foundPost = await postsQyRepository.findPostById(postId)
 
         return await commentsQyRepository.findPostComments(String(foundPost._id), query)
     }

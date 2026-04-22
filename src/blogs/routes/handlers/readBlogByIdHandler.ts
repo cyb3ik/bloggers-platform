@@ -8,7 +8,7 @@ import { blogsQueryService } from "../../domain/blogs.query.service"
 
 export const readBlogById = async (req: Request, res: Response) => {
     try {
-        const foundBlog: WithId<RawBlog> = await blogsQueryService.findById(String(req.params.id))
+        const foundBlog: WithId<RawBlog> = await blogsQueryService.findBlogById(String(req.params.id))
 
         res.status(HTTPStatusCode.OK).send(mapBlogToOutput(foundBlog))
     }

@@ -12,6 +12,6 @@ import { deleteUserById } from "./handlers/deleteUserByIdHandler"
 export const usersRouter = Router()
 
 usersRouter
-    .get("/", authGuardMiddleware, paginationAndSortingValidation(UserSortAttributes), readAllUsers)
+    .get("/", authGuardMiddleware, paginationAndSortingValidation(UserSortAttributes), inputValidationResultMiddleware, readAllUsers)
     .post("/", authGuardMiddleware, userDtoValidationMiddleware, inputValidationResultMiddleware, createUser)
     .delete("/:id", authGuardMiddleware, idValidation, inputValidationResultMiddleware, deleteUserById)

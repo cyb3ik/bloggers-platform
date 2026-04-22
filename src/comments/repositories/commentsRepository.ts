@@ -11,7 +11,7 @@ export const commentsRepository = {
         return insertedResult.insertedId.toString()
     },
 
-    async updateComment(id: string, body: CommentInputModel): Promise<void> {
+    async updateCommentById(id: string, body: CommentInputModel): Promise<void> {
         const updateResult = await commentsCollection.updateOne( 
             { _id: new ObjectId(id) },
             { 
@@ -28,7 +28,7 @@ export const commentsRepository = {
         return
     },
 
-    async deleteComment(id: string): Promise<void> {
+    async deleteCommentById(id: string): Promise<void> {
         const deleteResult = await commentsCollection.deleteOne( { _id: new ObjectId(id) } )    
 
         if (deleteResult.deletedCount < 1) {

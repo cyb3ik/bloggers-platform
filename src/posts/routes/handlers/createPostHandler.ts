@@ -9,9 +9,9 @@ import { postsQueryService } from "../../domain/posts.query.service"
 
 export const createPost = async (req: Request, res: Response) => {
     try {
-        const createdPostId: string = await postsService.create(req.body)
+        const createdPostId: string = await postsService.createPost(req.body)
 
-        const insertedPostWithId: WithId<RawPost> = await postsQueryService.findById(createdPostId)
+        const insertedPostWithId: WithId<RawPost> = await postsQueryService.findPostById(createdPostId)
 
         const newPostOutput = mapPostToOutput(insertedPostWithId)
 

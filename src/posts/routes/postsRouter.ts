@@ -20,7 +20,7 @@ import { createCommentForPost } from "./handlers/createCommentForPost"
 export const postsRouter = Router()
 
 postsRouter
-    .get("/", paginationAndSortingValidation(PostSortAttributes), readAllPosts)
+    .get("/", paginationAndSortingValidation(PostSortAttributes), inputValidationResultMiddleware, readAllPosts)
     .get("/:id", idValidation, inputValidationResultMiddleware, readPostById)
 
     .get("/:postId/comments", postIdValidation, paginationAndSortingValidation(CommentSortAttributes), inputValidationResultMiddleware, readCommentsFromPost)

@@ -11,7 +11,7 @@ export const createCommentForPost = async (req: Request, res: Response) => {
     try {
         const createdCommentId: string = await postsService.createCommentForPost(String(req.params.postId), req.user!, req.body)
 
-        const insertedCommentWithId: WithId<RawComment> = await commentsQueryService.findComment(createdCommentId)
+        const insertedCommentWithId: WithId<RawComment> = await commentsQueryService.findCommentById(createdCommentId)
 
         const newCommentOutput = mapCommentToOutput(insertedCommentWithId)
 

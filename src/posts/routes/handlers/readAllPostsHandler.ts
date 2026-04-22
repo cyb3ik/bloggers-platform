@@ -16,7 +16,7 @@ try {
 
         const inputQuery = paginationSetDefaults(sanitizedQuery)
 
-        const {items, totalCount} = await postsQueryService.findAll(inputQuery)
+        const {items, totalCount} = await postsQueryService.findAllPosts(inputQuery)
 
         const result = {
             pagesCount: Math.ceil(totalCount / inputQuery.pageSize),

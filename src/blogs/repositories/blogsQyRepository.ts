@@ -30,7 +30,7 @@ export const blogsQyRepository = {
             return {totalCount: totalCount, items: items}
     },
 
-    async findBlog(id: string): Promise<WithId<RawBlog>> {
+    async findBlogById(id: string): Promise<WithId<RawBlog>> {
         const result = await blogsCollection.findOne( { _id: new ObjectId(id) })
 
         if (!result) {

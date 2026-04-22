@@ -5,7 +5,7 @@ const loginValidation =
     .isString().withMessage('Login must be a string')
     .trim()
     .notEmpty().withMessage('Login should not be empty')
-    .isLength({min: 3, max: 10}).withMessage('Title length must be between 3 an 10')
+    .isLength({min: 3, max: 10}).withMessage('Login length must be between 3 an 10')
     .matches(/^[a-zA-Z0-9_-]*$/).withMessage('Login must contain only english letters, digits and this special signs: - or _')
 
 const passwordValidation = 

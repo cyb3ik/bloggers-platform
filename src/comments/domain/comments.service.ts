@@ -5,7 +5,7 @@ import { RawUser } from "../../users/models/userTypes";
 
 export const commentsService = {
 
-    async create(postId: string, user: WithId<RawUser>, body: CommentInputModel): Promise<string> {
+    async createComment(postId: string, user: WithId<RawUser>, body: CommentInputModel): Promise<string> {
 
         const newComment: RawComment = {
             content: body.content,
@@ -20,11 +20,11 @@ export const commentsService = {
         return await commentsRepository.createComment(newComment)
     },
 
-    async update(id: string, body: CommentInputModel): Promise<void> {
-        return await commentsRepository.updateComment(id, body)
+    async updateCommentById(id: string, body: CommentInputModel): Promise<void> {
+        return await commentsRepository.updateCommentById(id, body)
     },
 
-    async delete(id: string): Promise<void> {
-        return await commentsRepository.deleteComment(id)
+    async deleteCommentById(id: string): Promise<void> {
+        return await commentsRepository.deleteCommentById(id)
     }
 }

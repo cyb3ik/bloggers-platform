@@ -16,7 +16,7 @@ export async function readAllBlogs(req: Request, res: Response) {
 
         const inputQuery = paginationSetDefaults(sanitizedQuery)
 
-        const {items, totalCount} = await blogsQueryService.findAll(inputQuery)
+        const {items, totalCount} = await blogsQueryService.findAllBlogs(inputQuery)
 
         const result = {
             pagesCount: Math.ceil(totalCount / inputQuery.pageSize),

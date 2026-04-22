@@ -1,12 +1,12 @@
 import { Request, Response } from "express"
+import { authService } from "../../domain/auth.service"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
-import { postsService } from "../../domain/posts.service"
 import { errorsHandler } from "../../../core/errors/errors-handler"
 
-export const updatePostById = async (req: Request, res: Response) => {
+export const resendHandler = async (req: Request, res: Response) => {
     try {
-        await postsService.updatePostById(String(req.params.id), req.body)
-        
+        await authService.resendConfirmationCode(req.body.email)
+
         res.sendStatus(HTTPStatusCode.NO_CONTENT)
     }
     catch(e) {

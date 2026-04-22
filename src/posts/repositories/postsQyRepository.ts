@@ -24,7 +24,7 @@ export const postsQyRepository = {
                 return {totalCount: totalCount, items: items}
             },
         
-    async findPost(id: string): Promise<WithId<RawPost>> {
+    async findPostById(id: string): Promise<WithId<RawPost>> {
         const result = await postsCollection.findOne( { _id: new ObjectId(id) } )
     
         if (!result) {

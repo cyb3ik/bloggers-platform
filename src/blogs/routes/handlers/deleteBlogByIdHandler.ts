@@ -5,7 +5,7 @@ import { errorsHandler } from "../../../core/errors/errors-handler"
 
 export const deleteBlogById = async (req: Request, res: Response) => {
     try {
-        await blogsService.delete(String(req.params.id))
+        await blogsService.deleteBlogById(String(req.params.id))
 
         res.sendStatus(HTTPStatusCode.NO_CONTENT)
     }

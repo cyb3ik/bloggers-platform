@@ -11,7 +11,7 @@ export const createPostForBlog = async (req: Request, res: Response) => {
     try {
         const createdPostId: string = await blogsService.createPostForBlog(String(req.params.blogId), req.body)
 
-        const insertedPostWithId: WithId<RawPost> = await postsQueryService.findById(createdPostId)
+        const insertedPostWithId: WithId<RawPost> = await postsQueryService.findPostById(createdPostId)
 
         const newPostOutput = mapPostToOutput(insertedPostWithId)
 

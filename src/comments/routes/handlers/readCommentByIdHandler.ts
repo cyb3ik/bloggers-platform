@@ -8,7 +8,7 @@ import { mapCommentToOutput } from "../../models/mapCommentToOutput"
 
 export const readCommentById = async (req: Request, res: Response) => {
     try {
-        const foundComment: WithId<RawComment> = await commentsQueryService.findComment(String(req.params.id))
+        const foundComment: WithId<RawComment> = await commentsQueryService.findCommentById(String(req.params.id))
 
         res.status(HTTPStatusCode.OK).send(mapCommentToOutput(foundComment))
     }

@@ -1,5 +1,5 @@
 import { usersCollection } from "../../db/mongo.db"
-import { ObjectId, WithId } from "mongodb"
+import { ObjectId, UUID, WithId } from "mongodb"
 import { NotFoundError } from "../../core/errors/not-found-error"
 import { RawUser } from "../models/userTypes"
 import { NotUniqueError } from "../../core/errors/not-unique-error"
@@ -37,5 +37,35 @@ export const usersRepository = {
         }
 
         return
+    },
+
+    async confirmEmail(id: string): Promise<void> {
+        await usersCollection.updateOne( 
+            { 
+                _id: new ObjectId(id) 
+            }, 
+            {
+                $set: {
+                    "emailConfirmation.isConfirmed": true
+                }
+            }
+        )
+    },
+
+    async updateConfirmationInfo(id: string, newConfirmationInfo: {
+        confirmationCode: string,
+        expirationDate: Date,
+        isConfirmed: boolean 
+    }): Promise<void> {
+        await usersCollection.updateOne( 
+            { 
+                _id: new ObjectId(id) 
+            }, 
+            {
+                $set: {
+                    emailConfirmation: newConfirmationInfo
+                }
+            }
+        )
     }
 }

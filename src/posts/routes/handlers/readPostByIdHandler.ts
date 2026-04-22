@@ -8,7 +8,7 @@ import { postsQueryService } from "../../domain/posts.query.service"
 
 export const readPostById = async (req: Request, res: Response) => {
     try {
-        const foundPost: WithId<RawPost> = await postsQueryService.findById(String(req.params.id))
+        const foundPost: WithId<RawPost> = await postsQueryService.findPostById(String(req.params.id))
 
         res.status(HTTPStatusCode.OK).send(mapPostToOutput(foundPost))
     }

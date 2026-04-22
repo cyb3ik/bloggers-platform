@@ -18,6 +18,6 @@ const bootstrap = async () => {
         console.log(`Server is listening on port ${PORT}`)
     })
 
-} 
+}
 
 bootstrap()

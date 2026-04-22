@@ -8,8 +8,9 @@ const loginOrEmailValidation =
 
 const passwordValidation = 
     body('password')
-    .isString().withMessage('Description must be a string')
+    .isString().withMessage('Password must be a string')
     .trim()
+    .notEmpty().withMessage('Password field must not be empty')
 
 export const authInputValidationMiddleware = [
     loginOrEmailValidation,

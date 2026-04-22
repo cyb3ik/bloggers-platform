@@ -43,7 +43,7 @@ export const usersQyRepository = {
         const result = await usersCollection.findOne( { _id: new ObjectId(id) })
     
         if (!result) {
-            throw new NotFoundError('Blog not found')
+            throw new NotFoundError('User not found')
         }
     
         return result
@@ -60,5 +60,21 @@ export const usersQyRepository = {
         )
 
         return user
+    },
+
+    async findUserByConfirmationCode(code: string): Promise<WithId<RawUser> | null> {
+        const result = await usersCollection.findOne( { "emailConfirmation.confirmationCode": code })
+    
+        return result
+    },
+
+    async findUserByEmail(email: string): Promise<WithId<RawUser>> {
+        const result = await usersCollection.findOne( { email: email })
+
+        if (!result) {
+            throw new NotFoundError('User not found')
+        }
+    
+        return result
     }
 }

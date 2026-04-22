@@ -8,8 +8,8 @@ import { RawUser } from "../../users/models/userTypes";
 
 export const postsService = {
 
-    async create(body: PostInputModel): Promise<string> {
-        const requiredBlog = await blogsQyRepository.findBlog(body.blogId)
+    async createPost(body: PostInputModel): Promise<string> {
+        const requiredBlog = await blogsQyRepository.findBlogById(body.blogId)
 
         const newPost: RawPost = {
             blogName: requiredBlog.name,
@@ -21,7 +21,7 @@ export const postsService = {
     },
 
     async createCommentForPost(id: string, user: WithId<RawUser>, body: CommentInputModel): Promise<string> {
-        const requiredPost = await postsRepository.findPost(id)
+        const requiredPost = await postsRepository.findPostById(id)
 
         const newCommentForPost: RawComment = {
             content: body.content,
@@ -36,11 +36,11 @@ export const postsService = {
         return await commentsRepository.createComment(newCommentForPost)
     },
 
-    async update(id: string, dto: PostInputModel): Promise<void> {
-        return await postsRepository.updatePost(id, dto)
+    async updatePostById(id: string, dto: PostInputModel): Promise<void> {
+        return await postsRepository.updatePostById(id, dto)
     },
 
-    async delete(id: string): Promise<void> {
-        return await postsRepository.deletePost(id)
+    async deletePostById(id: string): Promise<void> {
+        return await postsRepository.deletePostById(id)
     }
 }

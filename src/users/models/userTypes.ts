@@ -13,12 +13,21 @@ export type UserInputModel = {
     email: string
 }
 
+export type LoginInputModel = {
+    loginOrEmail: string
+    password: string}
+
 export type RawUser = {
     login: string
     email: string
     createdAt: string
     passwordSalt: string
     passwordHash: string
+    emailConfirmation: {
+        confirmationCode: string
+        expirationDate: Date
+        isConfirmed: boolean
+    }
 }
 
 export enum UserSortAttributes {

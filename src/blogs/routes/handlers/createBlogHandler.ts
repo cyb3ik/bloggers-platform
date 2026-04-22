@@ -9,13 +9,13 @@ import { blogsQueryService } from "../../domain/blogs.query.service"
 
 export const createBlog = async (req: Request, res: Response) => {
     try {
-        const createdBlogId: string = await blogsService.create(req.body)
+        const createdBlogId: string = await blogsService.createBlog(req.body)
 
-        const insertedBlogWithId: WithId<RawBlog> = await blogsQueryService.findById(createdBlogId)
+        const insertedBlogWithId: WithId<RawBlog> = await blogsQueryService.findBlogById(createdBlogId)
 
         const newBlogOutput = mapBlogToOutput(insertedBlogWithId)
 
-        res.status(HTTPStatusCode.CREATED).send(newBlogOutput)
+        return res.status(HTTPStatusCode.CREATED).send(newBlogOutput)
     }
 
     catch(e: unknown) {
