@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-
 import bcrypt from "bcrypt"
 import {add} from "date-fns/add"
 import { usersRepository } from "../../users/repositories/usersRepository";
@@ -7,15 +6,10 @@ import { mailService } from "../../users/adapters/mailService";
 import { RawUser, UserInputModel } from "../../users/models/userTypes";
 import { usersQyRepository } from "../../users/repositories/usersQyRepository";
 import { AlreadyConfirmedError } from "../../core/errors/confirmation-error";
-import { EmailError } from "../../core/errors/email-error";
 
 export const authService = {
     async registerUser(body: UserInputModel): Promise<void> {
-        const user = await usersQyRepository.findUserByEmail(body.email)
-
-        if (user) {
-            throw new EmailError('User with such email already exists')
-        }
+        await usersQyRepository.findUserByEmail(body.email)
 
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await bcrypt.hash(body.password, passwordSalt)
