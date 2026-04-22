@@ -6,7 +6,7 @@ import { usersRepository } from "../../../users/repositories/usersRepository"
 
 export const confirmationHandler = async (req: Request, res: Response) => {
     try {
-        let user = await usersQyRepository.findUserByConfirmationCode(req.body.code)
+        const user = await usersQyRepository.findUserByConfirmationCode(req.body.code)
 
         if (!user) {
             return res.status(HTTPStatusCode.BAD_REQUEST).send({ errorsMessages: [{

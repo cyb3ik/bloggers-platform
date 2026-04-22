@@ -2,6 +2,7 @@ import { usersCollection } from "../../db/mongo.db"
 import { ObjectId, WithId } from "mongodb"
 import { NotFoundError } from "../../core/errors/not-found-error"
 import { PaginationUserQuery, RawUser } from "../models/userTypes"
+import { EmailError } from "../../core/errors/email-error"
 
 export const usersQyRepository = {
 
@@ -72,7 +73,7 @@ export const usersQyRepository = {
         const result = await usersCollection.findOne( { email: email })
 
         if (!result) {
-            throw new NotFoundError('User not found')
+            throw new EmailError('User with such email not found')
         }
     
         return result
