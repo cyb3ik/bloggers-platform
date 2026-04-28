@@ -12,10 +12,10 @@ import { paginationAndSortingValidation } from "../../core/middlewares/validatio
 import { PostSortAttributes } from "../models/postTypes"
 import { postIdValidation } from "../../core/middlewares/validation/postIdValidationMiddleware"
 import { CommentSortAttributes } from "../../comments/models/commentTypes"
-import { tokenMiddleware } from "../../core/middlewares/validation/tokenMiddleware"
 import { commentDtoValidationMiddleware } from "../../comments/validation/commentDtoValidationMiddleware"
 import { readCommentsFromPost } from "./handlers/readCommentsFromPost"
 import { createCommentForPost } from "./handlers/createCommentForPost"
+import { accessTokenMiddleware } from "../../core/middlewares/validation/accessTokenMiddleware"
 
 export const postsRouter = Router()
 
@@ -24,7 +24,7 @@ postsRouter
     .get("/:id", idValidation, inputValidationResultMiddleware, readPostById)
 
     .get("/:postId/comments", postIdValidation, paginationAndSortingValidation(CommentSortAttributes), inputValidationResultMiddleware, readCommentsFromPost)
-    .post("/:postId/comments", tokenMiddleware, postIdValidation, commentDtoValidationMiddleware, inputValidationResultMiddleware, createCommentForPost)
+    .post("/:postId/comments", accessTokenMiddleware, postIdValidation, commentDtoValidationMiddleware, inputValidationResultMiddleware, createCommentForPost)
 
     .post("/", authGuardMiddleware, postDtoValidationMiddleware, inputValidationResultMiddleware, createPost)
     .put("/:id", authGuardMiddleware, idValidation, postDtoValidationMiddleware, inputValidationResultMiddleware, updatePostById)

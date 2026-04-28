@@ -7,9 +7,11 @@ import { TESTING_PATH, POSTS_PATH, BLOGS_PATH, USERS_PATH, AUTH_PATH, COMMENTS_P
 import { usersRouter } from "./users/routes/usersRouter"
 import { authRouter } from "./auth/routes/authRouter"
 import { commentsRouter } from "./comments/routes/commentsRouter"
+import cookieParser from "cookie-parser"
  
 export const setupApp = (app: Express) => {
     app.use(express.json())
+    app.use(cookieParser()) 
 
     app.get("/", (req: Request, res: Response) => {
           res.status(HTTPStatusCode.OK).send("Hello World!");

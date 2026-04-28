@@ -67,5 +67,18 @@ export const usersRepository = {
                 }
             }
         )
+    },
+
+    async banRefreshToken(userId: string, refreshToken: string): Promise<void> {
+        await usersCollection.updateOne(
+            {
+                _id: new ObjectId(userId)
+            },
+            {
+                $push: {
+                    invalidRefreshTokens: refreshToken
+                }
+            }
+        )
     }
 }

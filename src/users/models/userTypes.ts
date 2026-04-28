@@ -15,7 +15,8 @@ export type UserInputModel = {
 
 export type LoginInputModel = {
     loginOrEmail: string
-    password: string}
+    password: string
+}
 
 export type RawUser = {
     login: string
@@ -28,6 +29,7 @@ export type RawUser = {
         expirationDate: Date
         isConfirmed: boolean
     }
+    invalidRefreshTokens: string[]
 }
 
 export enum UserSortAttributes {

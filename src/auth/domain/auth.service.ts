@@ -39,7 +39,8 @@ export const authService = {
                     hours: 2
                 }),
                 isConfirmed: false
-            }
+            },
+            invalidRefreshTokens: []
         }
 
         await usersRepository.createUser(newUser)

@@ -7,8 +7,13 @@ export const authHandler = async (req: Request, res: Response) => {
     const user = await usersQueryService.checkCredentials(req.body.loginOrEmail, req.body.password)
 
     if (user) {
-        const token = await jwtService.createJWT(user)
-        return res.status(HTTPStatusCode.OK).send({accessToken: token})
+        const accessToken = await jwtService.createAccessToken(user)
+        const refreshToken = await jwtService.createRefreshToken(user)
+
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+        res.status(HTTPStatusCode.OK).send({accessToken: accessToken})
+
+        return
     } else {
         return res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
     }
