@@ -6,7 +6,6 @@ import { usersRepository } from "../../users/repositories/usersRepository";
 import { mailService } from "../../users/adapters/mailService";
 import { RawUser, UserInputModel } from "../../users/models/userTypes";
 import { usersQyRepository } from "../../users/repositories/usersQyRepository";
-import { AlreadyConfirmedError } from "../../core/errors/confirmation-error";
 import { EmailError } from "../../core/errors/email-error";
 import { LoginError } from "../../core/errors/login-error";
 

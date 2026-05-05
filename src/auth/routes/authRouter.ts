@@ -13,12 +13,13 @@ import { resendHandler } from "./handlers/resendHandler"
 import { refreshTokenMiddleware } from "../../core/middlewares/validation/refreshTokenMiddleware"
 import { refreshHandler } from "./handlers/refreshHandler"
 import { logOutHandler } from "./handlers/logOutHandler"
+import { rateLimitMiddleware } from "../../core/middlewares/requestsRate/rateLimitMiddleware"
 
 
 export const authRouter = Router()
 
 authRouter
-    .post("/login", authInputValidationMiddleware, inputValidationResultMiddleware, authHandler)
+    .post("/login", authInputValidationMiddleware, inputValidationResultMiddleware, rateLimitMiddleware, authHandler)
     
     .post("/registration", userDtoValidationMiddleware, inputValidationResultMiddleware, registerHandler)
     .post("/registration-confirmation", codeValidation, inputValidationResultMiddleware, confirmationHandler)

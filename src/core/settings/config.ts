@@ -18,8 +18,10 @@ export const adminUserName = process.env.ADMIN_USERNAME
 export const adminPass = process.env.ADMIN_PASSWORD
 
 export const JWT_ACCESS_SECRET = process.env.JWT_SECRET
-
 export const JWT_REFRESH_SECRET = process.env.JWT_SECRET
+
+export const SESSION_SECRET = process.env.SESSION_SECRET
 
 export const EMAIL = process.env.EMAIL
 export const EMAIL_PASS = process.env.EMAIL_PASS
+
