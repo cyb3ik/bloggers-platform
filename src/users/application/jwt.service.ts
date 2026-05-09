@@ -1,38 +1,28 @@
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 import { WithId } from "mongodb"
 import { RawUser } from "../models/userTypes"
 import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "../../core/settings/config"
 
 export const jwtService = {
 
-    async createAccessToken(user: WithId<RawUser>): Promise<string> {
-        const token = jwt.sign({userId: user._id.toString()}, JWT_ACCESS_SECRET!, {expiresIn: '10s'})
+    async createAccessToken(userId: string): Promise<string> {
+        const token = await jwt.sign({userId: userId}, JWT_ACCESS_SECRET!, {expiresIn: '10s'})
         return token
     },
 
-    async createRefreshToken(user: WithId<RawUser>): Promise<string> {
-        const token = jwt.sign({userId: user._id.toString()}, JWT_REFRESH_SECRET!, {expiresIn: '20s'})
+    async createRefreshToken(userId: string, deviceId: string): Promise<string> {
+        const token = await jwt.sign({userId: userId, deviceId: deviceId }, JWT_REFRESH_SECRET!, {expiresIn: '20s'})
         return token
     },
 
-    getUserIdByAccessToken(token: string): string | null {
-        try {
-            const result: any = jwt.verify(token, JWT_ACCESS_SECRET!)
-            return result.userId
-        }
-        catch(e) {
-            return null
-        }
+    async getAccessTokenPayload(token: string): Promise<JwtPayload> {
+        const result: any = await jwt.verify(token, JWT_ACCESS_SECRET!)
+        return result
     },
 
-    getUserIdByRefreshToken(token: string): string | null {
-        try {
-            const result: any = jwt.verify(token, JWT_REFRESH_SECRET!)
-            return result.userId
-        }
-        catch(e) {
-            return null
-        }
+    async getRefreshTokenPayload(token: string): Promise<JwtPayload> {
+        const result: any = await jwt.verify(token, JWT_REFRESH_SECRET!)
+        return result
     },
     
 }

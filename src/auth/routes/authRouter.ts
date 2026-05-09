@@ -19,11 +19,11 @@ import { rateLimitMiddleware } from "../../core/middlewares/requestsRate/rateLim
 export const authRouter = Router()
 
 authRouter
-    .post("/login", authInputValidationMiddleware, inputValidationResultMiddleware, rateLimitMiddleware, authHandler)
+    .post("/login", rateLimitMiddleware, authInputValidationMiddleware, inputValidationResultMiddleware, authHandler)
     
-    .post("/registration", userDtoValidationMiddleware, inputValidationResultMiddleware, registerHandler)
-    .post("/registration-confirmation", codeValidation, inputValidationResultMiddleware, confirmationHandler)
-    .post("/registration-email-resending", emailValidation, inputValidationResultMiddleware, resendHandler)
+    .post("/registration", rateLimitMiddleware, userDtoValidationMiddleware, inputValidationResultMiddleware, registerHandler)
+    .post("/registration-confirmation", rateLimitMiddleware, codeValidation, inputValidationResultMiddleware, confirmationHandler)
+    .post("/registration-email-resending", rateLimitMiddleware, emailValidation, inputValidationResultMiddleware, resendHandler)
 
     .post("/refresh-token", refreshTokenMiddleware, refreshHandler)
     .post("/logout", refreshTokenMiddleware, logOutHandler)

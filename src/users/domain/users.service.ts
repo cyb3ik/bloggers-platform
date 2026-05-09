@@ -21,8 +21,7 @@ export const usersService = {
                 confirmationCode: randomUUID(),
                 expirationDate: new Date(),
                 isConfirmed: true
-            },
-            invalidRefreshTokens: []
+            }
         }
 
         return await usersRepository.createUser(newUser)

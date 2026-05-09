@@ -13,5 +13,6 @@ export const rateLimitMiddleware = async (req: Request, res: Response, next: Nex
 
     else {
         next()
+        return
     }
 }

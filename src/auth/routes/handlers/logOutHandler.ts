@@ -1,9 +1,13 @@
 import { Request, Response } from "express"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
-import { usersRepository } from "../../../users/repositories/usersRepository"
+import { jwtService } from "../../../users/application/jwt.service"
+import { sessionsRepository } from "../../../core/device-sessions/repositories/sessionsRepository"
 
 export const logOutHandler = async (req: Request, res: Response) => {
-    await usersRepository.banRefreshToken(String(req.user._id), req.cookies.refreshToken)
+    const refreshTokenPayload = await jwtService.getRefreshTokenPayload(req.cookies.refreshToken)
+
+    await sessionsRepository.deleteCurrentUserSession(refreshTokenPayload.userId, refreshTokenPayload.deviceId)
+    
     res.sendStatus(HTTPStatusCode.NO_CONTENT)  
     return
 }

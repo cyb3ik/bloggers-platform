@@ -1,16 +1,23 @@
 import { Request, Response } from "express"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
 import { jwtService } from "../../../users/application/jwt.service"
-import { usersRepository } from "../../../users/repositories/usersRepository"
+import { sessionsRepository } from "../../../core/device-sessions/repositories/sessionsRepository"
 
 export const refreshHandler = async (req: Request, res: Response) => {
-    await usersRepository.banRefreshToken(String(req.user._id), req.cookies.refreshToken)
+    try {
+        const oldRefreshTokenPayload = await jwtService.getRefreshTokenPayload(req.cookies.refreshToken)
 
-    const accessToken = await jwtService.createAccessToken(req.user)
-    const refreshToken = await jwtService.createRefreshToken(req.user)
+        const accessToken = await jwtService.createAccessToken(req.user._id.toString())
+        const refreshToken = await jwtService.createRefreshToken(req.user._id.toString(), oldRefreshTokenPayload.deviceId)
 
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
-    res.status(HTTPStatusCode.OK).send({accessToken: accessToken})
-        
-    return
+        const newRefreshTokenPayload = await jwtService.getRefreshTokenPayload(refreshToken)
+
+        await sessionsRepository.updateSessionInformation(newRefreshTokenPayload.userId, newRefreshTokenPayload.deviceId, oldRefreshTokenPayload.iat!.toString(), newRefreshTokenPayload.iat!.toString())
+
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+        return res.status(HTTPStatusCode.OK).send({accessToken: accessToken})
+    }
+    catch(e) {
+        return res.sendStatus(HTTPStatusCode.UNAUTHORIZED)
+    }
 }

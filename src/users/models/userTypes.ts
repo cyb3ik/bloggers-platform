@@ -29,7 +29,6 @@ export type RawUser = {
         expirationDate: Date
         isConfirmed: boolean
     }
-    invalidRefreshTokens: string[]
 }
 
 export enum UserSortAttributes {

@@ -7,6 +7,7 @@ export const POSTS_PATH = '/bloggers-platform/api/posts'
 export const USERS_PATH = '/bloggers-platform/api/users'
 export const COMMENTS_PATH = '/bloggers-platform/api/comments'
 export const AUTH_PATH = '/bloggers-platform/api/auth'
+export const SESSIONS_PATH = '/bloggers-platform/api/security'
 
 
 export const mongoUrl = process.env.MONGO_URL
