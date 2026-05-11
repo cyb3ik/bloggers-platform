@@ -22,5 +22,26 @@ export const mailService = {
                 </p>`
         })
         return info
+    },
+
+    async sendRecoveryCode(email: string, code: string) {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: EMAIL,
+                pass: EMAIL_PASS
+            }
+        })
+
+        let info = await transporter.sendMail({
+            from: '"Kirya" <code>',
+            to: email,
+            subject: 'Password recovery code',
+            html: `<h1>Password recovery</h1>
+                <p>To finish password recovery please follow the link below:
+                    <a href='https://somesite.com/password-recovery?recoveryCode=${code}'>recovery password</a>
+                </p>`
+        })
+        return info
     }
 }

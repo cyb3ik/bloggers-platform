@@ -69,15 +69,21 @@ export const usersQyRepository = {
         return result
     },
 
+    async findUserByPasswordRecoveryCode(code: string): Promise<WithId<RawUser> | null> {
+        const result = await usersCollection.findOne( { "passwordRecovery.recoveryCode": code })
+    
+        return result
+    },
+
     async findUserByEmail(email: string): Promise<WithId<RawUser> | null> {
         const result = await usersCollection.findOne( { email: email })
-    
+
         return result
     },
 
     async findUserByLogin(login: string): Promise<WithId<RawUser> | null> {
         const result = await usersCollection.findOne( { login: login })
-    
+
         return result
     }
 }

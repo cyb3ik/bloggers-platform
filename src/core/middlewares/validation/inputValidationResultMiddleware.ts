@@ -19,8 +19,7 @@ export const inputValidationResultMiddleware = (req: Request, res: Response, nex
   const errors = validationResult(req).formatWith(formatErrors).array({ onlyFirstError: true })
  
   if (errors.length) {
-    res.status(HTTPStatusCode.BAD_REQUEST).json({ errorsMessages: errors })
-    return
+    return res.status(HTTPStatusCode.BAD_REQUEST).json({ errorsMessages: errors })
   }
  
   next()

@@ -1,7 +1,7 @@
 import { usersCollection } from "../../db/mongo.db"
 import { ObjectId, UUID, WithId } from "mongodb"
 import { NotFoundError } from "../../core/errors/not-found-error"
-import { RawUser } from "../models/userTypes"
+import { RawUser, RecoveryInfo } from "../models/userTypes"
 import { NotUniqueError } from "../../core/errors/not-unique-error"
 
 export const usersRepository = {
@@ -65,6 +65,32 @@ export const usersRepository = {
                 $set: {
                     emailConfirmation: newConfirmationInfo
                 }
+            }
+        )
+    },
+
+    async addRecoveryInfo(id: string, recoveryInfo: RecoveryInfo): Promise<void> {
+        await usersCollection.updateOne(
+            {
+                _id: new ObjectId(id)
+            },
+            {
+                $set: { passwordRecovery: recoveryInfo } 
+            }
+        )
+    },
+
+    async updatePassword(id: string, passwordHash: string, passwordSalt: string): Promise<void> {
+        await usersCollection.updateOne(
+            {
+                _id: new ObjectId(id)
+            },
+            {
+                $set: { 
+                    passwordHash: passwordHash,
+                    passwordSalt: passwordSalt
+                },
+                $unset: {passwordRecovery: ""}
             }
         )
     }

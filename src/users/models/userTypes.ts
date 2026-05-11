@@ -29,8 +29,13 @@ export type RawUser = {
         expirationDate: Date
         isConfirmed: boolean
     }
+    passwordRecovery?: RecoveryInfo
 }
 
+export type RecoveryInfo = {
+    recoveryCode: string
+    expirationDate: Date
+}
 export enum UserSortAttributes {
     id = 'id',
     login = 'login',

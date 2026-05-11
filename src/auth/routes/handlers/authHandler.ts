@@ -32,7 +32,6 @@ export const authHandler = async (req: Request, res: Response) => {
 
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
         res.status(HTTPStatusCode.OK).send({accessToken: accessToken})
-        return
         
     } else {
         return res.sendStatus(HTTPStatusCode.UNAUTHORIZED)

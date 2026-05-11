@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import {add} from "date-fns/add"
 import { usersRepository } from "../../users/repositories/usersRepository";
 import { mailService } from "../../users/adapters/mailService";
-import { RawUser, UserInputModel } from "../../users/models/userTypes";
+import { RawUser, RecoveryInfo, UserInputModel } from "../../users/models/userTypes";
 import { usersQyRepository } from "../../users/repositories/usersQyRepository";
 import { EmailError } from "../../core/errors/email-error";
 import { LoginError } from "../../core/errors/login-error";
@@ -68,5 +68,24 @@ export const authService = {
         await usersRepository.updateConfirmationInfo(user._id.toString(), newConfirmationInfo)
 
         mailService.sendEmail(email, newConfirmationInfo.confirmationCode).catch(e => console.log(e))
+    },
+
+    async sendPasswordRecoveryCode(email: string): Promise<void> {
+        const user = await usersQyRepository.findUserByEmail(email)
+
+        if (!user) {
+            return
+        }
+
+        const recoveryInfo: RecoveryInfo = {
+            recoveryCode: randomUUID().toString(),
+            expirationDate: add(new Date(), {
+                hours: 2
+            })
+        }
+
+        await usersRepository.addRecoveryInfo(user._id.toString(), recoveryInfo)
+
+        mailService.sendRecoveryCode(email, recoveryInfo.recoveryCode).catch(e => console.log(e))
     }
 }
