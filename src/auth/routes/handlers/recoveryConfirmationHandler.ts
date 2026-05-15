@@ -2,7 +2,6 @@ import { Request, Response } from "express"
 import { usersQyRepository } from "../../../users/repositories/usersQyRepository"
 import { HTTPStatusCode } from "../../../core/utils/status-codes"
 import { errorsHandler } from "../../../core/errors/errors-handler"
-import { usersRepository } from "../../../users/repositories/usersRepository"
 import { usersService } from "../../../users/domain/users.service"
 
 export const recoveryConfirmationHandler = async (req: Request, res: Response) => {

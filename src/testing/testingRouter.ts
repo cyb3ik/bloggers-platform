@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express"
 import { HTTPStatusCode } from "../core/utils/status-codes"
-import { commentsCollection, postsCollection, usersCollection } from "../db/mongo.db"
+import { commentsCollection, postsCollection, requestsCollection, sessionsCollection, usersCollection } from "../db/mongo.db"
 import { blogsCollection } from "../db/mongo.db"
 
 export const testingRouter = Router()
@@ -11,5 +11,8 @@ testingRouter
         await blogsCollection.deleteMany({})
         await usersCollection.deleteMany({})
         await commentsCollection.deleteMany({})
+        await requestsCollection.deleteMany({})
+        await commentsCollection.deleteMany({})
+        await sessionsCollection.deleteMany({})
         res.sendStatus(HTTPStatusCode.NO_CONTENT)
     })
