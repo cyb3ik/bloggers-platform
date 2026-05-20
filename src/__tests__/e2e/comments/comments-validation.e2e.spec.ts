@@ -52,15 +52,15 @@ describe('Comments API body/params/query validation', () => {
 
     beforeAll(async () => {
         await runDB(mongoUrl!, 'bloggers-platform-test')
-        await request(app)
+        const response1 = await request(app)
             .delete(TESTING_PATH + '/all-data')
-            .expect(HTTPStatusCode.NO_CONTENT)
+
+        expect(response1.status).toBe(HTTPStatusCode.NO_CONTENT)
 
         const createdBlog = await blogsTestManager.createEntity(
             validBlogInput,
-            basicToken,
-            HTTPStatusCode.CREATED
-        )
+            basicToken)
+        expect(createdBlog.status).toBe(HTTPStatusCode.CREATED)
 
         validBlogId = createdBlog.body.id
 
@@ -73,32 +73,31 @@ describe('Comments API body/params/query validation', () => {
 
         const createdPost = await postsTestManager.createEntity(
             validPostInput,
-            basicToken,
-            HTTPStatusCode.CREATED
-        )
+            basicToken)
+        expect(createdPost.status).toBe(HTTPStatusCode.CREATED)
 
         validPostId = createdPost.body.id
 
 
-        await usersTestManager.createEntity(
+        const response2 = await usersTestManager.createEntity(
             validUserInput, 
-            basicToken,
-            HTTPStatusCode.CREATED) 
+            basicToken) 
+        expect(response2.status).toBe(HTTPStatusCode.CREATED)
 
         const accessTokenResponse = await authTestManager.createEntity(
             validLoginInput, 
-            null,
-            HTTPStatusCode.OK, 
+            null, 
             '/login') 
+        expect(accessTokenResponse.status).toBe(HTTPStatusCode.OK)
 
         accessToken = "Bearer " + accessTokenResponse.body.accessToken
 
         const createdComment = await postsTestManager.createEntity(
             validPostCommentInput,
             accessToken,
-            HTTPStatusCode.CREATED,
             `/${validPostId}` + '/comments'
         )
+        expect(createdComment.status).toBe(HTTPStatusCode.CREATED)
 
         validCommentId = createdComment.body.id
     })
@@ -113,27 +112,27 @@ describe('Comments API body/params/query validation', () => {
         DELETE /api/comments/:id`, async () => {
 
         // GET comment by id
-        await commentsTestManager.findEntity(
+        const response3 = await commentsTestManager.findEntity(
             null,
-            HTTPStatusCode.OK,
             `/${validCommentId}`
         )
+        expect(response3.status).toBe(HTTPStatusCode.OK)
 
         // PUT in comment by id
-        await commentsTestManager.updateEntity(
+        const response4 = await commentsTestManager.updateEntity(
             validPostCommentInput,
             accessToken,
-            HTTPStatusCode.NO_CONTENT,
             `/${validCommentId}`
         )
+        expect(response4.status).toBe(HTTPStatusCode.NO_CONTENT)
 
         // DELETE comment by id
 
-        await commentsTestManager.deleteEntity(
+        const response5 = await commentsTestManager.deleteEntity(
             accessToken,
-            HTTPStatusCode.NO_CONTENT,
             `/${validCommentId}`
         )
+        expect(response5.status).toBe(HTTPStatusCode.NO_CONTENT)
     })
 
     it(`should return error if ID in params is invalid; 
@@ -147,49 +146,49 @@ describe('Comments API body/params/query validation', () => {
         // GET comment by id
         const resForInvalidInput1 = await commentsTestManager.findEntity(
             null,
-            HTTPStatusCode.BAD_REQUEST,
             `/${invalidTypeId}`
         )
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput1.body.errorsMessages[0].field).toEqual('id')
 
         const resForInvalidInput2 = await commentsTestManager.findEntity(
             null,
-            HTTPStatusCode.BAD_REQUEST,
             `/${invalidFormatId}`
         )
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput2.body.errorsMessages[0].field).toEqual('id')
 
         // PUT in comment by id
         const resForInvalidInput3 = await commentsTestManager.updateEntity(
             validPostCommentInput,
-            accessToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            accessToken, 
             `/${invalidTypeId}`)
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('id')
 
         const resForInvalidInput4 = await commentsTestManager.updateEntity(
             validPostCommentInput,
-            accessToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            accessToken, 
             `/${invalidFormatId}`)
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('id')
 
         // DELETE comment by id
         const resForInvalidInput5 = await commentsTestManager.deleteEntity(
-            accessToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            accessToken, 
             `/${invalidTypeId}`)
+        expect(resForInvalidInput5.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput5.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput5.body.errorsMessages[0].field).toEqual('id')
 
         const resForInvalidInput6 = await commentsTestManager.deleteEntity(
-            accessToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            accessToken, 
             `/${invalidFormatId}`)
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('id')
     })
@@ -203,9 +202,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput1 = await postsTestManager.createEntity(
             invalidTypeInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}` + '/comments'
         )
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput1.body.errorsMessages[0].field).toEqual('content')
 
@@ -216,9 +215,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput2 = await postsTestManager.createEntity(
             emptyInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}` + '/comments'
         )
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput2.body.errorsMessages[0].field).toEqual('content')
 
@@ -229,9 +228,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput3 = await postsTestManager.createEntity(
             shortContentInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}` + '/comments'
         )
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('content')
 
@@ -242,9 +241,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput4 = await postsTestManager.createEntity(
             longContentInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}` + '/comments'
         )
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('content')
     })
@@ -257,9 +256,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput1 = await commentsTestManager.updateEntity(
             invalidTypeInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validCommentId}`
         )
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput1.body.errorsMessages[0].field).toEqual('content')
 
@@ -270,9 +269,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput2 = await commentsTestManager.updateEntity(
             emptyInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validCommentId}`
         )
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput2.body.errorsMessages[0].field).toEqual('content')
 
@@ -283,9 +282,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput3 = await commentsTestManager.updateEntity(
             shortContentInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validCommentId}`
         )
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('content')
 
@@ -296,9 +295,9 @@ describe('Comments API body/params/query validation', () => {
         const resForInvalidInput4 = await commentsTestManager.updateEntity(
             longContentInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validCommentId}`
         )
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('content')
     })

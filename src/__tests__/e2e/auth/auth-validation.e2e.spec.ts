@@ -43,15 +43,15 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
     beforeAll(async () => {
         await runDB(mongoUrl!, 'bloggers-platform-test')
-        await request(app)
+        const response1 = await request(app)
             .delete(TESTING_PATH + '/all-data')
-            .expect(HTTPStatusCode.NO_CONTENT)
 
-        await usersTestManager.createEntity(
+        expect(response1.status).toBe(HTTPStatusCode.NO_CONTENT)
+
+        const response2 = await usersTestManager.createEntity(
             validUserInput,
-            basicToken,
-            HTTPStatusCode.CREATED
-        )
+            basicToken)
+        expect(response2.status).toBe(HTTPStatusCode.CREATED)
     })
 
     afterAll(async () => {
@@ -69,9 +69,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
         const resForInvalidInput1 = await authTestManager.createEntity(
             invalidTypeInput,
             null,
-            HTTPStatusCode.BAD_REQUEST,
             '/login'
         )
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(2)
 
         const emptyInput = {
@@ -82,9 +82,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
         const resForInvalidInput2 = await authTestManager.createEntity(
             emptyInput,
             null,
-            HTTPStatusCode.BAD_REQUEST,
             '/login'
         )
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(2)
     })
 
@@ -99,9 +99,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
         
         const resForInvalidInput1 = await authTestManager.createEntity(
             invalidTypeInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(3)
 
         const emptyInput = {
@@ -112,9 +112,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput2 = await authTestManager.createEntity(
             emptyInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(3)
 
         const shortLoginInput = {
@@ -131,17 +131,17 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput3 = await authTestManager.createEntity(
             shortLoginInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('login')
 
         const resForInvalidInput4 = await authTestManager.createEntity(
             longLoginInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('login')
 
@@ -159,17 +159,17 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput6 = await authTestManager.createEntity(
             shortPassInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('password')
 
         const resForInvalidInput7 = await authTestManager.createEntity(
             longPassInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput7.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput7.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput7.body.errorsMessages[0].field).toEqual('password')
 
@@ -181,9 +181,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput8 = await authTestManager.createEntity(
             invalidEmailInput, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration")
+        expect(resForInvalidInput8.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput8.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput8.body.errorsMessages[0].field).toEqual('email')
     })
@@ -200,9 +200,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput1 = await authTestManager.createEntity(
             invalidTypeCode, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-confirmation")
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput1.body.errorsMessages[0].field).toEqual('code')
 
@@ -212,9 +212,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput2 = await authTestManager.createEntity(
             emptyCode, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-confirmation")
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput2.body.errorsMessages[0].field).toEqual('code')
 
@@ -224,9 +224,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput3 = await authTestManager.createEntity(
             invalidFormatCode, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-confirmation")
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('code')
 
@@ -236,17 +236,17 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput4 = await authTestManager.createEntity(
             invalidTypeEmail, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-email-resending")
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('email')
 
         const resForInvalidInput5 = await authTestManager.createEntity(
             invalidTypeEmail, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/password-recovery")
+        expect(resForInvalidInput5.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput5.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput5.body.errorsMessages[0].field).toEqual('email')
 
@@ -256,17 +256,17 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput6 = await authTestManager.createEntity(
             emptyEmail, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-email-resending")
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('email')
 
         const resForInvalidInput7 = await authTestManager.createEntity(
             emptyEmail, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/password-recovery")
+        expect(resForInvalidInput7.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput7.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput7.body.errorsMessages[0].field).toEqual('email')
 
@@ -276,17 +276,17 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput8 = await authTestManager.createEntity(
             invalidFormatEmail, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-email-resending")
+        expect(resForInvalidInput8.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput8.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput8.body.errorsMessages[0].field).toEqual('email')
 
         const resForInvalidInput9 = await authTestManager.createEntity(
             invalidFormatEmail, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/registration-email-resending")
+        expect(resForInvalidInput9.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput9.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput9.body.errorsMessages[0].field).toEqual('email')
 
@@ -296,9 +296,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput10 = await authTestManager.createEntity(
             invalidTypePassword, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/new-password")
+        expect(resForInvalidInput10.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput10.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput10.body.errorsMessages[0].field).toEqual('newPassword')
 
@@ -308,9 +308,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput11 = await authTestManager.createEntity(
             emptyPassword, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/new-password")
+        expect(resForInvalidInput11.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput11.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput11.body.errorsMessages[0].field).toEqual('newPassword')
 
@@ -320,9 +320,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput12 = await authTestManager.createEntity(
             shortPassword, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/new-password")
+        expect(resForInvalidInput12.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput12.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput12.body.errorsMessages[0].field).toEqual('newPassword')
 
@@ -332,9 +332,9 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
         const resForInvalidInput13 = await authTestManager.createEntity(
             longPassword, 
-            null, 
-            HTTPStatusCode.BAD_REQUEST,
+            null,
             "/new-password")
+        expect(resForInvalidInput13.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput13.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput13.body.errorsMessages[0].field).toEqual('newPassword')
 
