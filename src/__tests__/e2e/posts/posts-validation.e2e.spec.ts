@@ -49,29 +49,30 @@ describe('Posts API body/params/query validation', () => {
 
     beforeAll(async () => {
         await runDB(mongoUrl!, 'bloggers-platform-test')
-        await request(app)
+        const response1 = await request(app)
             .delete(TESTING_PATH + '/all-data')
-            .expect(HTTPStatusCode.NO_CONTENT)
+
+        expect(response1.status).toBe(HTTPStatusCode.NO_CONTENT)
         
         // creating blog for further usage of its id
         const createdBlog = await blogsTestManager.createEntity(
             validBlogInput, 
-            basicToken,
-            HTTPStatusCode.CREATED)
+            basicToken)
+        expect(createdBlog.status).toBe(HTTPStatusCode.CREATED)
 
         validBlogId = createdBlog.body.id
 
         // creating user for further usage of his access token
-        await usersTestManager.createEntity(
+        const response2 = await usersTestManager.createEntity(
             validUserInput, 
-            basicToken,
-            HTTPStatusCode.CREATED) 
+            basicToken) 
+        expect(response2.status).toBe(HTTPStatusCode.CREATED)
 
         const accessTokenResponse = await authTestManager.createEntity(
             validLoginInput, 
-            null,
-            HTTPStatusCode.OK, 
+            null, 
             '/login') 
+        expect(accessTokenResponse.status).toBe(HTTPStatusCode.OK)
 
         accessToken = "Bearer " + accessTokenResponse.body.accessToken
     })
@@ -96,42 +97,42 @@ describe('Posts API body/params/query validation', () => {
 
         const createdPost = await postsTestManager.createEntity(
             validPostInput, 
-            basicToken,
-            HTTPStatusCode.CREATED) 
+            basicToken) 
+        expect(createdPost.status).toBe(HTTPStatusCode.CREATED)
 
         const validPostId = createdPost.body.id
         
         // GET post by id
-        await postsTestManager.findEntity(
-            null,
-            HTTPStatusCode.OK, 
+        const response3 = await postsTestManager.findEntity(
+            null, 
             `/${validPostId}`)
+        expect(response3.status).toBe(HTTPStatusCode.OK)
         
         // GET comments from post by id
-        await postsTestManager.findEntity(
-            null,
-            HTTPStatusCode.OK, 
+        const response4 = await postsTestManager.findEntity(
+            null, 
             `/${validPostId}` + '/comments')
+        expect(response4.status).toBe(HTTPStatusCode.OK)
         
         // POST comment in post
-        await postsTestManager.createEntity(
+        const response5 = await postsTestManager.createEntity(
             validPostCommentInput, 
-            accessToken,
-            HTTPStatusCode.CREATED, 
+            accessToken, 
             `/${createdPost.body.id}` + '/comments')
+        expect(response5.status).toBe(HTTPStatusCode.CREATED)
 
         // PUT in post by id
-        await postsTestManager.updateEntity(
+        const response6 = await postsTestManager.updateEntity(
             validPostInput, 
-            basicToken,
-            HTTPStatusCode.NO_CONTENT, 
+            basicToken, 
             `/${validPostId}`)
+        expect(response6.status).toBe(HTTPStatusCode.NO_CONTENT)
 
         // DELETE post by id
-        await postsTestManager.deleteEntity(
-            basicToken,
-            HTTPStatusCode.NO_CONTENT, 
+        const response7 = await postsTestManager.deleteEntity(
+            basicToken, 
             `/${validPostId}`)
+        expect(response7.status).toBe(HTTPStatusCode.NO_CONTENT)
     })
 
     it(`should return error if ID in params is invalid; 
@@ -153,81 +154,81 @@ describe('Posts API body/params/query validation', () => {
 
         // GET post by id
         const resForInvalidInput1 = await postsTestManager.findEntity(
-            null,
-            HTTPStatusCode.BAD_REQUEST, 
+            null, 
             `/${invalidTypeId}`)
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput1.body.errorsMessages[0].field).toEqual('id')
 
         const resForInvalidInput2 = await postsTestManager.findEntity(
-            null,
-            HTTPStatusCode.BAD_REQUEST, 
+            null, 
             `/${invalidFormatId}`)
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput2.body.errorsMessages[0].field).toEqual('id')
         
         // GET comments from post by id
         const resForInvalidInput3 = await postsTestManager.findEntity(
-            null,
-            HTTPStatusCode.BAD_REQUEST, 
+            null, 
             `/${invalidTypeId}` + '/comments')
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('postId')
 
         const resForInvalidInput4 = await postsTestManager.findEntity(
-            null,
-            HTTPStatusCode.BAD_REQUEST, 
+            null, 
             `/${invalidFormatId}` + '/comments')
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('postId')
         
         // POST comment in post
         const resForInvalidInput5 = await postsTestManager.createEntity(
             validPostCommentInput,
-            accessToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            accessToken, 
             `/${invalidTypeId}` + '/comments')
+        expect(resForInvalidInput5.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput5.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput5.body.errorsMessages[0].field).toEqual('postId')
 
         const resForInvalidInput6 = await postsTestManager.createEntity(
             validPostCommentInput,
             accessToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${invalidFormatId}` + '/comments')
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('postId')
 
         // PUT in post by id
         const resForInvalidInput7 = await postsTestManager.updateEntity(
             validPostInput,
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            basicToken, 
             `/${invalidTypeId}`)
+        expect(resForInvalidInput7.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput7.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput7.body.errorsMessages[0].field).toEqual('id')
 
         const resForInvalidInput8 = await postsTestManager.updateEntity(
             validPostInput,
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            basicToken, 
             `/${invalidFormatId}`)
+        expect(resForInvalidInput8.status).toBe(HTTPStatusCode.BAD_REQUEST)
 
         expect(resForInvalidInput8.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput8.body.errorsMessages[0].field).toEqual('id')
 
         // DELETE post by id
         const resForInvalidInput9 = await postsTestManager.deleteEntity(
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            basicToken, 
             `/${invalidTypeId}`)
+        expect(resForInvalidInput9.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput9.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput9.body.errorsMessages[0].field).toEqual('id')
 
         const resForInvalidInput10 = await postsTestManager.deleteEntity(
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST, 
+            basicToken, 
             `/${invalidFormatId}`)
+        expect(resForInvalidInput10.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput10.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput10.body.errorsMessages[0].field).toEqual('id')
     })
@@ -243,8 +244,8 @@ describe('Posts API body/params/query validation', () => {
         
         const resForInvalidInput1 = await postsTestManager.createEntity(
             invalidTypeInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(4)
 
         const emptyInput = {
@@ -256,8 +257,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput2 = await postsTestManager.createEntity(
             emptyInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(3)
 
         const emptyTitleInput = {
@@ -269,8 +270,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput3 = await postsTestManager.createEntity(
             emptyTitleInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('title')
 
@@ -283,8 +284,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput4 = await postsTestManager.createEntity(
             emptyDescInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('shortDescription')
 
@@ -297,8 +298,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput5 = await postsTestManager.createEntity(
             emptyContentInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput5.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput5.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput5.body.errorsMessages[0].field).toEqual('content')
 
@@ -311,8 +312,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput6 = await postsTestManager.createEntity(
             longTitleInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('title')
 
@@ -325,8 +326,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput7 = await postsTestManager.createEntity(
             longDescInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput7.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput7.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput7.body.errorsMessages[0].field).toEqual('shortDescription')
 
@@ -339,8 +340,8 @@ describe('Posts API body/params/query validation', () => {
 
         const resForInvalidInput8 = await postsTestManager.createEntity(
             longContentInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput8.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput8.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput8.body.errorsMessages[0].field).toEqual('content')
 
@@ -353,8 +354,8 @@ describe('Posts API body/params/query validation', () => {
         
         const resForInvalidInput9 = await postsTestManager.createEntity(
             invalidTypeOfBlogIdInput, 
-            basicToken,
-            HTTPStatusCode.BAD_REQUEST)
+            basicToken)
+        expect(resForInvalidInput9.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput9.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput9.body.errorsMessages[0].field).toEqual('blogId')
     })
@@ -370,9 +371,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput1 = await blogsTestManager.createEntity(
             invalidTypeInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(3)
 
         const emptyInput = {
@@ -384,9 +385,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput2 = await blogsTestManager.createEntity(
             emptyInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(3)
 
         const emptyTitleInput = {
@@ -398,9 +399,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput3 = await blogsTestManager.createEntity(
             emptyTitleInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('title')
 
@@ -413,9 +414,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput4 = await blogsTestManager.createEntity(
             emptyDescInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('shortDescription')
 
@@ -428,9 +429,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput5 = await blogsTestManager.createEntity(
             emptyContentInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput5.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput5.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput5.body.errorsMessages[0].field).toEqual('content')
 
@@ -443,9 +444,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput6 = await blogsTestManager.createEntity(
             longTitleInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('title')
 
@@ -458,9 +459,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput7 = await blogsTestManager.createEntity(
             longDescInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput7.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput7.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput7.body.errorsMessages[0].field).toEqual('shortDescription')
 
@@ -473,9 +474,9 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput8 = await blogsTestManager.createEntity(
             longContentInput,
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validBlogId}` + '/posts'
         )
+        expect(resForInvalidInput8.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput8.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput8.body.errorsMessages[0].field).toEqual('content')
     })
@@ -491,8 +492,8 @@ describe('Posts API body/params/query validation', () => {
 
         const createdPost = await postsTestManager.createEntity(
             validPostInput,
-            basicToken,
-            HTTPStatusCode.CREATED)
+            basicToken)
+        expect(createdPost.status).toBe(HTTPStatusCode.CREATED)
 
         const validPostId = createdPost.body.id
         
@@ -506,8 +507,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput1 = await postsTestManager.updateEntity(
             invalidTypeInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput1.body.errorsMessages).toHaveLength(4)
 
         const emptyInput = {
@@ -520,8 +521,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput2 = await postsTestManager.updateEntity(
             emptyInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput2.body.errorsMessages).toHaveLength(3)
 
         const emptyTitleInput = {
@@ -534,8 +535,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput3 = await postsTestManager.updateEntity(
             emptyTitleInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput3.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput3.body.errorsMessages[0].field).toEqual('title')
 
@@ -549,8 +550,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput4 = await postsTestManager.updateEntity(
             emptyDescInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput4.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput4.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput4.body.errorsMessages[0].field).toEqual('shortDescription')
 
@@ -564,8 +565,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput5 = await postsTestManager.updateEntity(
             emptyContentInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput5.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput5.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput5.body.errorsMessages[0].field).toEqual('content')
 
@@ -579,8 +580,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput6 = await postsTestManager.updateEntity(
             longTitleInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput6.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput6.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput6.body.errorsMessages[0].field).toEqual('title')
 
@@ -594,8 +595,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput7 = await postsTestManager.updateEntity(
             longDescInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput7.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput7.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput7.body.errorsMessages[0].field).toEqual('shortDescription')
 
@@ -609,8 +610,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput8 = await postsTestManager.updateEntity(
             longContentInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput8.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput8.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput8.body.errorsMessages[0].field).toEqual('content')
 
@@ -624,8 +625,8 @@ describe('Posts API body/params/query validation', () => {
         const resForInvalidInput9 = await postsTestManager.updateEntity(
             invalidTypeOfBlogIdInput, 
             basicToken,
-            HTTPStatusCode.BAD_REQUEST,
             `/${validPostId}`)
+        expect(resForInvalidInput9.status).toBe(HTTPStatusCode.BAD_REQUEST)
         expect(resForInvalidInput9.body.errorsMessages).toHaveLength(1)
         expect(resForInvalidInput9.body.errorsMessages[0].field).toEqual('blogId')
     })
@@ -634,7 +635,7 @@ describe('Posts API body/params/query validation', () => {
         
 //         const resForDefaultPagination = await request(app)
 //             .get(POSTS_PATH)
-//             .expect(HTTPStatusCode.OK)
+//             expect(resForDefaultPagination.status).toBe(HTTPStatusCode.OK)
 
 //         expect(resForDefaultPagination.body.page).toBe(1)
 //         expect(resForDefaultPagination.body.pageSize).toBe(10)
@@ -643,7 +644,7 @@ describe('Posts API body/params/query validation', () => {
 
 //         const resForValidPagination = await request(app)
 //             .get(POSTS_PATH + '?pageSize=1&pageNumber=2')
-//             .expect(HTTPStatusCode.OK)
+//             expect(resForValidPagination.status).toBe(HTTPStatusCode.OK)
 
 //         expect(resForValidPagination.body.page).toBe(2)
 //         expect(resForValidPagination.body.pageSize).toBe(1)
@@ -653,46 +654,46 @@ describe('Posts API body/params/query validation', () => {
 //         // PAGE SIZE
 //         const resForInvalidPageSize1 = await request(app)
 //             .get(POSTS_PATH + '?pageSize=0&pageNumber=1&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageSize1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageSize1.body.errorsMessages).toHaveLength(1)
 
 //         const resForInvalidPageSize2 = await request(app)
 //             .get(POSTS_PATH + '?pageSize=101&pageNumber=1&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageSize2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageSize2.body.errorsMessages).toHaveLength(1)
 
 //         const resForInvalidPageSize3 = await request(app)
 //             .get(POSTS_PATH + '?pageSize=abc&pageNumber=1&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageSize3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageSize3.body.errorsMessages).toHaveLength(1)
 
 //         // PAGE NUMBER
 //         const resForInvalidPageNumber1 = await request(app)
 //             .get(POSTS_PATH + '?pageSize=10&pageNumber=0&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageNumber1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageNumber1.body.errorsMessages).toHaveLength(1)
 
 //         const resForInvalidPageNumber2 = await request(app)
 //             .get(POSTS_PATH + '?pageSize=10&pageNumber=abc&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageNumber2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageNumber2.body.errorsMessages).toHaveLength(1)
 
 //         // SORT DIRECTION
 //         const resForInvalidSortDirection = await request(app)
 //             .get(POSTS_PATH + '?pageSize=10&pageNumber=1&sortDirection=abc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidSortDirection.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidSortDirection.body.errorsMessages).toHaveLength(1)
         
 //         // SORT BY
 //         const resForInvalidSortBy = await request(app)
 //             .get(POSTS_PATH + '?pageSize=10&pageNumber=1&sortDirection=asc&sortBy=i')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidSortBy.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidSortBy.body.errorsMessages).toHaveLength(1)
 //     })
@@ -703,7 +704,7 @@ describe('Posts API body/params/query validation', () => {
 //             .post(BLOGS_PATH)
 //             .set('Authorization', token)
 //             .send(validBlogInput)
-//             .expect(HTTPStatusCode.CREATED)
+//             expect(createdBlog.status).toBe(HTTPStatusCode.CREATED)
         
 //         const validPostInput: PostInputModel = {
 //             title: 'PostTitle',
@@ -716,11 +717,11 @@ describe('Posts API body/params/query validation', () => {
 //             .post(POSTS_PATH)
 //             .set('Authorization', token)
 //             .send(validPostInput)
-//             .expect(HTTPStatusCode.CREATED)
+//             expect(createdPost.status).toBe(HTTPStatusCode.CREATED)
         
 //         const resForDefaultPagination = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments')
-//             .expect(HTTPStatusCode.OK)
+//             expect(resForDefaultPagination.status).toBe(HTTPStatusCode.OK)
 
 //         expect(resForDefaultPagination.body.page).toBe(1)
 //         expect(resForDefaultPagination.body.pageSize).toBe(10)
@@ -729,7 +730,7 @@ describe('Posts API body/params/query validation', () => {
 
 //         const resForValidPagination = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=1&pageNumber=2')
-//             .expect(HTTPStatusCode.OK)
+//             expect(resForValidPagination.status).toBe(HTTPStatusCode.OK)
 
 //         expect(resForValidPagination.body.page).toBe(2)
 //         expect(resForValidPagination.body.pageSize).toBe(1)
@@ -739,46 +740,46 @@ describe('Posts API body/params/query validation', () => {
 //         // PAGE SIZE
 //         const resForInvalidPageSize1 = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=0&pageNumber=1&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageSize1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageSize1.body.errorsMessages).toHaveLength(1)
 
 //         const resForInvalidPageSize2 = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=101&pageNumber=1&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageSize2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageSize2.body.errorsMessages).toHaveLength(1)
 
 //         const resForInvalidPageSize3 = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=abc&pageNumber=1&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageSize3.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageSize3.body.errorsMessages).toHaveLength(1)
 
 //         // PAGE NUMBER
 //         const resForInvalidPageNumber1 = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=10&pageNumber=0&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageNumber1.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageNumber1.body.errorsMessages).toHaveLength(1)
 
 //         const resForInvalidPageNumber2 = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=10&pageNumber=abc&sortDirection=asc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidPageNumber2.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidPageNumber2.body.errorsMessages).toHaveLength(1)
 
 //         // SORT DIRECTION
 //         const resForInvalidSortDirection = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=10&pageNumber=1&sortDirection=abc&sortBy=id')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidSortDirection.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidSortDirection.body.errorsMessages).toHaveLength(1)
         
 //         // SORT BY
 //         const resForInvalidSortBy = await request(app)
 //             .get(POSTS_PATH + `/${createdPost.body.id}` + '/comments?pageSize=10&pageNumber=1&sortDirection=asc&sortBy=i')
-//             .expect(HTTPStatusCode.BAD_REQUEST)
+//             expect(resForInvalidSortBy.status).toBe(HTTPStatusCode.BAD_REQUEST)
         
 //         expect(resForInvalidSortBy.body.errorsMessages).toHaveLength(1)
 //     })
