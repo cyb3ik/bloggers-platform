@@ -2,6 +2,7 @@ import { commentsCollection, usersCollection } from "../../db/mongo.db"
 import { ObjectId, WithId } from "mongodb"
 import { NotFoundError } from "../../core/errors/not-found-error"
 import { CommentInputModel, RawComment } from "../models/commentTypes"
+import { LikeStatus } from "../../likes/models/likes-types"
 
 export const commentsRepository = {
 
@@ -35,6 +36,19 @@ export const commentsRepository = {
             throw new NotFoundError('Comment not found')
         }
 
+        return
+    },
+
+    async updateLikesAndDislikesCount(id: string, likesAmount: number, dislikesAmount: number): Promise<void> {
+        await commentsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $inc: {
+                    "likesInfo.likesCount": likesAmount,
+                    "likesInfo.dislikesCount": dislikesAmount,
+                }
+            }
+        )
         return
     }
 }

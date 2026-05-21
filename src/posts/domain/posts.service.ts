@@ -30,7 +30,11 @@ export const postsService = {
                 userId: user._id.toString(),
                 userLogin: user.login
             },
-            postId: requiredPost._id.toString()
+            postId: requiredPost._id.toString(),
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0
+            }
         }
 
         return await commentsRepository.createComment(newCommentForPost)

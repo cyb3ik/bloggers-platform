@@ -16,6 +16,7 @@ import { commentDtoValidationMiddleware } from "../../comments/validation/commen
 import { readCommentsFromPost } from "./handlers/readCommentsFromPost"
 import { createCommentForPost } from "./handlers/createCommentForPost"
 import { accessTokenMiddleware } from "../../core/middlewares/validation/accessTokenMiddleware"
+import { unauthAccessTokenMiddleware } from "../../core/middlewares/validation/unauthAccessTokenMiddleware"
 
 export const postsRouter = Router()
 
@@ -23,7 +24,7 @@ postsRouter
     .get("/", paginationAndSortingValidation(PostSortAttributes), inputValidationResultMiddleware, readAllPosts)
     .get("/:id", idValidation, inputValidationResultMiddleware, readPostById)
 
-    .get("/:postId/comments", postIdValidation, paginationAndSortingValidation(CommentSortAttributes), inputValidationResultMiddleware, readCommentsFromPost)
+    .get("/:postId/comments",  unauthAccessTokenMiddleware, postIdValidation, paginationAndSortingValidation(CommentSortAttributes), inputValidationResultMiddleware, readCommentsFromPost)
     .post("/:postId/comments", accessTokenMiddleware, postIdValidation, commentDtoValidationMiddleware, inputValidationResultMiddleware, createCommentForPost)
 
     .post("/", authGuardMiddleware, postDtoValidationMiddleware, inputValidationResultMiddleware, createPost)

@@ -1,11 +1,9 @@
 import request from 'supertest'
 import express from 'express'
-import { BlogInputModel, } from '../../../blogs/models/blogTypes'
 import { adminPass, adminUserName, AUTH_PATH, mongoUrl, TESTING_PATH, USERS_PATH } from '../../../core/settings/config'
 import { runDB, stopDb } from '../../../db/mongo.db'
 import { HTTPStatusCode } from '../../../core/utils/status-codes'
-import { CommentInputModel } from '../../../comments/models/commentTypes'
-import { LoginInputModel, UserInputModel } from '../../../users/models/userTypes'
+import { UserInputModel } from '../../../users/models/userTypes'
 import { testingSetup } from '../../../testing/testing-setup-app'
 import { TestManager } from '../utils/test-manager'
 
@@ -16,25 +14,10 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
     const authTestManager = new TestManager(app, AUTH_PATH)
     const usersTestManager = new TestManager(app, USERS_PATH)
 
-    const validBlogInput: BlogInputModel = {
-        name: 'BlogName',
-        description: 'some desc',
-        websiteUrl: 'https://google.com'
-    }
-
     const validUserInput: UserInputModel ={
         login: 'Alex',
         password: '123123',
         email: 'alex@gmail.com'
-    }
-    
-    const validLoginInput: LoginInputModel = {
-        loginOrEmail: 'Alex',
-        password: '123123'
-    }
-
-    const validPostCommentInput: CommentInputModel = {
-        content: 'some content lolololol'
     }
 
     const credentials = `${adminUserName}:${adminPass}`

@@ -2,6 +2,7 @@ import { WithId } from "mongodb";
 import { CommentInputModel, RawComment } from "../models/commentTypes";
 import { commentsRepository } from "../repositories/commentsRepository";
 import { RawUser } from "../../users/models/userTypes";
+import { LikeStatus } from "../../likes/models/likes-types";
 
 export const commentsService = {
 
@@ -14,7 +15,11 @@ export const commentsService = {
                 userLogin: user.login
             },
             createdAt: new Date().toISOString(),
-            postId: postId
+            postId: postId,
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0
+            }
         }
 
         return await commentsRepository.createComment(newComment)
@@ -26,5 +31,9 @@ export const commentsService = {
 
     async deleteCommentById(id: string): Promise<void> {
         return await commentsRepository.deleteCommentById(id)
+    },
+
+    async updateLikesAndDislikesCount(commentId: string, likesAmount: number, dislikesAmount: number): Promise<void> {
+        return await commentsRepository.updateLikesAndDislikesCount(commentId, likesAmount, dislikesAmount)
     }
 }
