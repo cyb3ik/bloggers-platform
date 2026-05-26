@@ -1,0 +1,19 @@
+- в тестах переписать проверки ошибок на что-то подобное:
+expect(res.body.errorsMessages).toEqual(
+            expect.arrayContaining([
+                {
+                    message: expect.any(String),
+                    field: 'login'
+                },
+                {
+                    message: expect.any(String),
+                    field: 'email'
+                },
+                {
+                    message: expect.any(String),
+                    field: 'password'
+                }
+            ])
+        )
+- написать тесты на пагинацию
+- написать юнит тесты, в первую очередь проверить обработчик ошибок

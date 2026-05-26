@@ -7,6 +7,7 @@ import { LoginInputModel, UserInputModel, UserOutputModel } from '../../../users
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
 import { ObjectId } from 'mongodb'
+import { FieldError } from '../../../core/errors/field-error'
 
 
 describe('Users API endpoints tests', () => {
@@ -205,6 +206,13 @@ describe('Users API endpoints tests', () => {
 
         const createdUserData = res1.body
 
+        expect(createdUserData).toMatchObject<UserOutputModel>({
+            id: expect.any(String),
+            login: validUserInput1.login,
+            email: validUserInput1.email,
+            createdAt: expect.stringMatching(/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?$/)
+        })
+
         const res2 = await usersTestManager.findEntity(
             basicToken
         )
@@ -215,9 +223,45 @@ describe('Users API endpoints tests', () => {
         expect(usersList1).toBeInstanceOf(Array)
         expect(usersList1).toHaveLength(1)
         expect(usersList1).toContainEqual(createdUserData)
-
-        expect(createdUserData).toMatchObject<UserOutputModel>
     })
+
+    it(`should not create user with same login or email
+        POST /api/users
+        additional methods: 
+        GET /api/users`, async () => {
+        const res1 = await usersTestManager.createEntity(
+            validUserInput1,
+            basicToken)
+        expect(res1.status).toBe(HTTPStatusCode.CREATED)
+
+        const sameLoginUserInput = {
+            login: validUserInput1.login,
+            email: 'anotheremail@mail.ru',
+            password: '123123'
+        }
+
+        const res2 = await usersTestManager.createEntity(
+            sameLoginUserInput,
+            basicToken)
+        expect(res2.status).toBe(HTTPStatusCode.BAD_REQUEST)
+
+        expect(res2.body.errorsMessages).toHaveLength(1)
+        expect(res2.body.errorsMessages[0].field).toEqual('login or email')
+
+        const sameEmailUserInput = {
+            login: 'Sergey',
+            email: validUserInput1.email,
+            password: '123123'
+        }
+
+        const res3 = await usersTestManager.createEntity(
+            sameEmailUserInput,
+            basicToken)
+        expect(res3.status).toBe(HTTPStatusCode.BAD_REQUEST)
+
+        expect(res3.body.errorsMessages).toHaveLength(1)
+        expect(res3.body.errorsMessages[0].field).toEqual('login or email')
+        })
 
     it(`should not create user with invalid input data
         POST /api/users
@@ -244,6 +288,23 @@ describe('Users API endpoints tests', () => {
             invalidUserInput,
             basicToken)
         expect(res1.status).toBe(HTTPStatusCode.BAD_REQUEST)
+
+        expect(res1.body.errorsMessages).toEqual(
+            expect.arrayContaining([
+                {
+                    message: expect.any(String),
+                    field: 'login'
+                },
+                {
+                    message: expect.any(String),
+                    field: 'email'
+                },
+                {
+                    message: expect.any(String),
+                    field: 'password'
+                }
+            ])
+        )
 
         const res2 = await usersTestManager.findEntity(
             basicToken
