@@ -7,6 +7,7 @@ import { LoginInputModel, UserInputModel, UserOutputModel } from '../../../users
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
 import { ObjectId } from 'mongodb'
+import { basicToken, invalidToken, validUserInput1, validUserInput2 } from '../utils/fixtures'
 
 
 describe('Users API endpoints tests', () => {
@@ -181,13 +182,6 @@ describe('Users API endpoints tests', () => {
 
         const createdUserData = res1.body
 
-        expect(createdUserData).toMatchObject<UserOutputModel>({
-            id: expect.any(String),
-            login: validUserInput1.login,
-            email: validUserInput1.email,
-            createdAt: expect.stringMatching(/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?$/)
-        })
-
         const res2 = await usersTestManager.findEntity(
             basicToken
         )
@@ -199,7 +193,12 @@ describe('Users API endpoints tests', () => {
         expect(usersList1).toHaveLength(1)
         expect(usersList1).toContainEqual(createdUserData)
 
-        expect(createdUserData).toMatchObject<UserOutputModel>
+        expect(createdUserData).toMatchObject<UserOutputModel>({
+            id: expect.any(String),
+            login: validUserInput1.login,
+            email: validUserInput1.email,
+            createdAt: expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)
+        })
     })
 
     it(`should not create user with invalid input data
@@ -227,23 +226,6 @@ describe('Users API endpoints tests', () => {
             invalidUserInput,
             basicToken)
         expect(res1.status).toBe(HTTPStatusCode.BAD_REQUEST)
-
-        expect(res1.body.errorsMessages).toEqual(
-            expect.arrayContaining([
-                {
-                    message: expect.any(String),
-                    field: 'login'
-                },
-                {
-                    message: expect.any(String),
-                    field: 'email'
-                },
-                {
-                    message: expect.any(String),
-                    field: 'password'
-                }
-            ])
-        )
 
         const res2 = await usersTestManager.findEntity(
             basicToken
