@@ -6,12 +6,14 @@ import { RawComment } from '../comments/models/commentTypes'
 import { DB_NAME } from '../core/settings/config'
 import { Req } from '../core/requests/types/requestTypes'
 import { RawSession } from '../core/device-sessions/types/sessionTypes'
+import { RawLike } from '../likes/models/likes-types'
 
 export let client: MongoClient
 export let postsCollection: Collection<RawPost>
 export let blogsCollection: Collection<RawBlog>
 export let usersCollection: Collection<RawUser>
 export let commentsCollection: Collection<RawComment>
+export let likesCollection: Collection<RawLike>
 export let requestsCollection: Collection<Req>
 export let sessionsCollection: Collection<RawSession>
 
@@ -19,6 +21,7 @@ const POSTS_COLLECTION_NAME = 'posts'
 const BLOGS_COLLECTION_NAME = 'blogs'
 const USERS_COLLECTION_NAME = 'users'
 const COMMENTS_COLLECTION_NAME = 'comments'
+const LIKES_COLLECTION_NAME = 'likes'
 const REQUESTS_COLLECTION_NAME = 'requests'
 const SESSIONS_COLLECTION_NAME = 'sessions'
  
@@ -31,6 +34,7 @@ export async function runDB(url: string, dbName = DB_NAME): Promise<void> {
     blogsCollection = db.collection<RawBlog>(BLOGS_COLLECTION_NAME)
     usersCollection = db.collection<RawUser>(USERS_COLLECTION_NAME)
     commentsCollection = db.collection<RawComment>(COMMENTS_COLLECTION_NAME)
+    likesCollection = db.collection<RawLike>(LIKES_COLLECTION_NAME)
     requestsCollection = db.collection<Req>(REQUESTS_COLLECTION_NAME)
     sessionsCollection = db.collection<RawSession>(SESSIONS_COLLECTION_NAME)
     

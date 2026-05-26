@@ -1,4 +1,6 @@
+import { WithId } from "mongodb"
 import { paginatedInput } from "../../core/pagination/paginationTypes"
+import { LikeStatus, RawLike } from "../../likes/models/likes-types"
 
 export type CommentOutputModel = {
     id: string
@@ -8,6 +10,11 @@ export type CommentOutputModel = {
         userLogin: string
     }
     createdAt: string
+    likesInfo: {
+        likesCount: number
+        dislikesCount: number
+        myStatus: LikeStatus
+    }
 }
 
 export type CommentInputModel = {
@@ -27,6 +34,10 @@ export type RawComment = {
     }
     createdAt: string
     postId: string
+    likesInfo: {
+        likesCount: number
+        dislikesCount: number
+    }
 }
 
 export enum CommentSortAttributes {

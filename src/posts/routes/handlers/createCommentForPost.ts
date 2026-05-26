@@ -6,6 +6,7 @@ import { postsService } from "../../domain/posts.service"
 import { RawComment } from "../../../comments/models/commentTypes"
 import { commentsQueryService } from "../../../comments/domain/comments.query.service"
 import { mapCommentToOutput } from "../../../comments/models/mapCommentToOutput"
+import { LikeStatus } from "../../../likes/models/likes-types"
 
 export const createCommentForPost = async (req: Request, res: Response) => {
     try {
@@ -13,7 +14,7 @@ export const createCommentForPost = async (req: Request, res: Response) => {
 
         const insertedCommentWithId: WithId<RawComment> = await commentsQueryService.findCommentById(createdCommentId)
 
-        const newCommentOutput = mapCommentToOutput(insertedCommentWithId)
+        const newCommentOutput = mapCommentToOutput(insertedCommentWithId, LikeStatus.None)
 
         res.status(HTTPStatusCode.CREATED).send(newCommentOutput)
     }
