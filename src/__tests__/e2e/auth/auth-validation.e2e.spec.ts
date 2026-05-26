@@ -6,6 +6,7 @@ import { HTTPStatusCode } from '../../../core/utils/status-codes'
 import { UserInputModel } from '../../../users/models/userTypes'
 import { testingSetup } from '../../../testing/testing-setup-app'
 import { TestManager } from '../utils/test-manager'
+import { basicToken, validUserInput1 } from '../utils/fixtures'
 
 describe('Auth API body/params/query validation and jwt authorization test', () => {
     const app = express()
@@ -13,16 +14,6 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
 
     const authTestManager = new TestManager(app, AUTH_PATH)
     const usersTestManager = new TestManager(app, USERS_PATH)
-
-    const validUserInput: UserInputModel ={
-        login: 'Alex',
-        password: '123123',
-        email: 'alex@gmail.com'
-    }
-
-    const credentials = `${adminUserName}:${adminPass}`
-    const basicToken = 'Basic ' + Buffer.from(credentials).toString('base64')
-
 
     beforeAll(async () => {
         await runDB(mongoUrl!, 'bloggers-platform-test')
@@ -32,7 +23,7 @@ describe('Auth API body/params/query validation and jwt authorization test', () 
         expect(response1.status).toBe(HTTPStatusCode.NO_CONTENT)
 
         const response2 = await usersTestManager.createEntity(
-            validUserInput,
+            validUserInput1,
             basicToken)
         expect(response2.status).toBe(HTTPStatusCode.CREATED)
     })

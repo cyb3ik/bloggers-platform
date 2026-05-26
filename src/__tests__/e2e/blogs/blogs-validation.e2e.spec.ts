@@ -7,27 +7,13 @@ import { HTTPStatusCode } from '../../../core/utils/status-codes'
 import { reallyLongDesc } from '../utils/validation-strings'
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
+import { basicToken, validBlogInput, validBlogPostInput } from '../utils/fixtures'
 
 describe('Blogs API body/params/query validation', () => {
     const app = express()
     testingSetup(app)
     
     const blogsTestManager = new TestManager(app, BLOGS_PATH)
-
-    const validBlogInput: BlogInputModel = {
-        name: 'BlogName',
-        description: 'some desc',
-        websiteUrl: 'https://google.com'
-    }
-
-    const validBlogPostInput: BlogPostInputModel = {
-            title: 'lolol',
-            shortDescription: 'lolol',
-            content: 'lolol'
-        }
-
-    const credentials = `${adminUserName}:${adminPass}`
-    const basicToken = 'Basic ' + Buffer.from(credentials).toString('base64')
 
     let validBlogId: string
 

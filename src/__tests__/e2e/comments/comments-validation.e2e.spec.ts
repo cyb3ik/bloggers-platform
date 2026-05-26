@@ -10,6 +10,7 @@ import { PostInputModel } from '../../../posts/models/postTypes'
 import { LoginInputModel, UserInputModel } from '../../../users/models/userTypes'
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
+import { basicToken, validBlogInput, validLoginInput1, validPostCommentInput, validUserInput1 } from '../utils/fixtures'
 
 describe('Comments API body/params/query validation', () => {
     const app = express()
@@ -20,30 +21,6 @@ describe('Comments API body/params/query validation', () => {
     const commentsTestManager = new TestManager(app, COMMENTS_PATH)
     const usersTestManager = new TestManager(app, USERS_PATH)
     const authTestManager = new TestManager(app, AUTH_PATH)
-
-    const validBlogInput: BlogInputModel = {
-        name: 'BlogName',
-        description: 'some desc',
-        websiteUrl: 'https://google.com'
-    }
-
-    const validUserInput: UserInputModel ={
-        login: 'Alex',
-        password: '123123',
-        email: 'alex@gmail.com'
-    }
-    
-    const validLoginInput: LoginInputModel = {
-        loginOrEmail: 'Alex',
-        password: '123123'
-    }
-
-    const validPostCommentInput: CommentInputModel = {
-        content: 'some content lolololol'
-    }
-
-    const credentials = `${adminUserName}:${adminPass}`
-    const basicToken = 'Basic ' + Buffer.from(credentials).toString('base64')
 
     let accessToken: string
     let validBlogId: string
@@ -80,12 +57,12 @@ describe('Comments API body/params/query validation', () => {
 
 
         const response2 = await usersTestManager.createEntity(
-            validUserInput, 
+            validUserInput1, 
             basicToken) 
         expect(response2.status).toBe(HTTPStatusCode.CREATED)
 
         const accessTokenResponse = await authTestManager.createEntity(
-            validLoginInput, 
+            validLoginInput1, 
             null, 
             '/login') 
         expect(accessTokenResponse.status).toBe(HTTPStatusCode.OK)

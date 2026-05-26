@@ -7,7 +7,6 @@ import { LoginInputModel, UserInputModel, UserOutputModel } from '../../../users
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
 import { ObjectId } from 'mongodb'
-import { basicToken, invalidToken, validUserInput1, validUserInput2 } from '../utils/fixtures'
 
 
 describe('Users API endpoints tests', () => {
@@ -15,6 +14,30 @@ describe('Users API endpoints tests', () => {
     testingSetup(app)
 
     const usersTestManager = new TestManager(app, USERS_PATH)
+    const authTestManager = new TestManager(app, AUTH_PATH)
+
+    const validUserInput1: UserInputModel ={
+        login: 'Alex',
+        password: '123123',
+        email: 'alex@gmail.com'
+    }
+
+    const validUserInput2: UserInputModel ={
+        login: 'Sergey',
+        password: '123123',
+        email: 'sergey@gmail.com'
+    }
+
+    const validLoginInput: LoginInputModel = {
+            loginOrEmail: 'Alex',
+            password: '123123'
+    }
+
+    const credentials = `${adminUserName}:${adminPass}`
+    const basicToken = 'Basic ' + Buffer.from(credentials).toString('base64')
+
+    const invalidCredentials = `${adminUserName}:${adminPass + 'lol'}`
+    const invalidToken = 'Basic ' + Buffer.from(invalidCredentials).toString('base64')
 
     beforeAll(async () => {
         await runDB(mongoUrl!, 'bloggers-platform-test')

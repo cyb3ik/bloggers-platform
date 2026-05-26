@@ -1,11 +1,11 @@
 import request from 'supertest'
 import express from 'express'
-import { adminPass, adminUserName, mongoUrl, TESTING_PATH, USERS_PATH } from '../../../core/settings/config'
+import { mongoUrl, TESTING_PATH, USERS_PATH } from '../../../core/settings/config'
 import { runDB, stopDb } from '../../../db/mongo.db'
 import { HTTPStatusCode } from '../../../core/utils/status-codes'
-import { UserInputModel } from '../../../users/models/userTypes'
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
+import { basicToken, validUserInput1 } from '../utils/fixtures'
 
 
 describe('Users API body/params/query validation', () => {
@@ -13,15 +13,6 @@ describe('Users API body/params/query validation', () => {
     testingSetup(app)
 
     const usersTestManager = new TestManager(app, USERS_PATH)
-
-    const validUserInput: UserInputModel ={
-        login: 'Alex',
-        password: '123123',
-        email: 'alex@gmail.com'
-    }
-
-    const credentials = `${adminUserName}:${adminPass}`
-    const basicToken = 'Basic ' + Buffer.from(credentials).toString('base64')
 
     beforeAll(async () => {
         await runDB(mongoUrl!, 'bloggers-platform-test')
@@ -41,7 +32,7 @@ describe('Users API body/params/query validation', () => {
         DELETE /api/users/:id`, async () => {
 
         const createdUser = await usersTestManager.createEntity(
-            validUserInput,
+            validUserInput1,
             basicToken)
         expect(createdUser.status).toBe(HTTPStatusCode.CREATED)
 
