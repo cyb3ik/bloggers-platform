@@ -1,5 +1,6 @@
+import { WithId } from "mongodb"
 import { likesCollection } from "../../db/mongo.db"
-import { LikeStatus } from "../models/likes-types"
+import { LikeStatus, RawLike } from "../models/likes-types"
 
 export const likesQyRepository = {
     async getUserStatusFromEntity(entityId: string, userId: string): Promise<LikeStatus | null> {
@@ -13,5 +14,19 @@ export const likesQyRepository = {
         }
 
         return result.status
+    },
+
+    async getAllEntityLikesWithStatus(entityId: string, status: LikeStatus): Promise<WithId<RawLike>[]> {
+        const items = await likesCollection
+        .find(
+            {
+                entityId: entityId,
+                status: status
+            }
+        )
+        .sort({ addedAt: -1 })
+        .toArray()
+
+        return items
     }
 }

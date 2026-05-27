@@ -15,13 +15,14 @@ import { paginationAndSortingValidation } from "../../core/middlewares/validatio
 import { BlogSortAttributes } from "../models/blogTypes"
 import { blogIdValidation } from "../../core/middlewares/validation/blogIdValidationMiddleware"
 import { PostSortAttributes } from "../../posts/models/postTypes"
+import { unauthAccessTokenMiddleware } from "../../core/middlewares/validation/unauthAccessTokenMiddleware"
 
 export const blogsRouter = Router() 
 
 blogsRouter
     .get("/", paginationAndSortingValidation(BlogSortAttributes), inputValidationResultMiddleware, readAllBlogs)
     .get("/:id", idValidation, inputValidationResultMiddleware, readBlogById)
-    .get("/:blogId/posts", blogIdValidation, paginationAndSortingValidation(PostSortAttributes), inputValidationResultMiddleware, readPostsFromBlog)
+    .get("/:blogId/posts", unauthAccessTokenMiddleware, blogIdValidation, paginationAndSortingValidation(PostSortAttributes), inputValidationResultMiddleware, readPostsFromBlog)
 
     .post("/", authGuardMiddleware, blogDtoValidationMiddleware, inputValidationResultMiddleware, createBlog)
     .post("/:blogId/posts", authGuardMiddleware, blogIdValidation, postDtoValidationMiddleware, inputValidationResultMiddleware, createPostForBlog)

@@ -1,4 +1,5 @@
 import { paginatedInput } from "../../core/pagination/paginationTypes"
+import { LikeStatus, LikeViewModel, RawLike } from "../../likes/models/likes-types"
 
 export type PostOutputModel = {
     id: string
@@ -8,6 +9,12 @@ export type PostOutputModel = {
     blogId: string
     blogName: string
     createdAt: string
+    extendedLikesInfo: {
+        likesCount: number
+        dislikesCount: number
+        myStatus: LikeStatus
+        newestLikes: LikeViewModel[]
+    }
 }
 
 export type PostInputModel = {
@@ -24,6 +31,10 @@ export type RawPost = {
     blogId: string
     blogName: string
     createdAt: string
+    extendedLikesInfo: {
+        likesCount: number
+        dislikesCount: number
+    }
 }
 
 export enum PostSortAttributes {

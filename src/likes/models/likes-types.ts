@@ -3,16 +3,17 @@ export type LikeInputModel = {
 }
 
 export type RawLike = {
-    createdAt: string
+    addedAt: string
     status: LikeStatus
     userId: string
+    login: string
     entityId: string
 }
 
 export type LikeViewModel = {
-    likesCount: number
-    dislikesCount: number
-    myStatus: LikeStatus
+    addedAt: string
+    userId: string
+    login: string
 }
 
 export enum LikeStatus {

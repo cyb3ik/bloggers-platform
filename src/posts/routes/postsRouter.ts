@@ -17,12 +17,17 @@ import { readCommentsFromPost } from "./handlers/readCommentsFromPost"
 import { createCommentForPost } from "./handlers/createCommentForPost"
 import { accessTokenMiddleware } from "../../core/middlewares/validation/accessTokenMiddleware"
 import { unauthAccessTokenMiddleware } from "../../core/middlewares/validation/unauthAccessTokenMiddleware"
+import { commentIdValidation } from "../../core/middlewares/validation/commentIdValidationMiddleware"
+import { likeStatusValidation } from "../../comments/validation/likeStatusValidationMiddleware"
+import { likePostById } from "./handlers/likePostByIdHandler"
 
 export const postsRouter = Router()
 
 postsRouter
-    .get("/", paginationAndSortingValidation(PostSortAttributes), inputValidationResultMiddleware, readAllPosts)
-    .get("/:id", idValidation, inputValidationResultMiddleware, readPostById)
+    .get("/", unauthAccessTokenMiddleware, paginationAndSortingValidation(PostSortAttributes), inputValidationResultMiddleware, readAllPosts)
+    .get("/:id", unauthAccessTokenMiddleware, idValidation, inputValidationResultMiddleware, readPostById)
+
+    .put("/:postId/like-status", accessTokenMiddleware, postIdValidation, likeStatusValidation, inputValidationResultMiddleware, likePostById)
 
     .get("/:postId/comments",  unauthAccessTokenMiddleware, postIdValidation, paginationAndSortingValidation(CommentSortAttributes), inputValidationResultMiddleware, readCommentsFromPost)
     .post("/:postId/comments", accessTokenMiddleware, postIdValidation, commentDtoValidationMiddleware, inputValidationResultMiddleware, createCommentForPost)

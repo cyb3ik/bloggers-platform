@@ -6,6 +6,7 @@ import { WithId } from "mongodb"
 import { RawPost } from "../../models/postTypes"
 import { errorsHandler } from "../../../core/errors/errors-handler"
 import { postsQueryService } from "../../domain/posts.query.service"
+import { LikeStatus } from "../../../likes/models/likes-types"
 
 export const createPost = async (req: Request, res: Response) => {
     try {
@@ -13,7 +14,7 @@ export const createPost = async (req: Request, res: Response) => {
 
         const insertedPostWithId: WithId<RawPost> = await postsQueryService.findPostById(createdPostId)
 
-        const newPostOutput = mapPostToOutput(insertedPostWithId)
+        const newPostOutput = mapPostToOutput(insertedPostWithId, LikeStatus.None, [])
 
         res.status(HTTPStatusCode.CREATED).send(newPostOutput)
     }

@@ -14,6 +14,10 @@ export const postsService = {
         const newPost: RawPost = {
             blogName: requiredBlog.name,
             createdAt: new Date().toISOString(),
+            extendedLikesInfo: {
+                likesCount: 0,
+                dislikesCount: 0
+            },
             ...body
         }
 
@@ -46,5 +50,9 @@ export const postsService = {
 
     async deletePostById(id: string): Promise<void> {
         return await postsRepository.deletePostById(id)
+    },
+
+    async updateLikesAndDislikesCount(postId: string, likesAmount: number, dislikesAmount: number): Promise<void> {
+        return await postsRepository.updateLikesAndDislikesCount(postId, likesAmount, dislikesAmount)
     }
 }

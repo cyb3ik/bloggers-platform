@@ -50,5 +50,18 @@ export const postsRepository = {
         }
 
         return
+    },
+
+    async updateLikesAndDislikesCount(id: string, likesAmount: number, dislikesAmount: number): Promise<void> {
+        await postsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $inc: {
+                    "extendedLikesInfo.likesCount": likesAmount,
+                    "extendedLikesInfo.dislikesCount": dislikesAmount,
+                }
+            }
+        )
+        return
     }
 }

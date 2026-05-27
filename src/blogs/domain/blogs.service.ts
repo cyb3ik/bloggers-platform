@@ -23,6 +23,10 @@ export const blogsService = {
             createdAt: new Date().toISOString(),
             blogId: requiredBlog._id.toString(),
             blogName: requiredBlog.name,
+            extendedLikesInfo: {
+                likesCount: 0,
+                dislikesCount: 0
+            },
             ...body
         }
 

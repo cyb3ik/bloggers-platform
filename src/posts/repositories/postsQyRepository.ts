@@ -22,7 +22,7 @@ export const postsQyRepository = {
                 const totalCount = await postsCollection.countDocuments({})
         
                 return {totalCount: totalCount, items: items}
-            },
+    },
         
     async findPostById(id: string): Promise<WithId<RawPost>> {
         const result = await postsCollection.findOne( { _id: new ObjectId(id) } )

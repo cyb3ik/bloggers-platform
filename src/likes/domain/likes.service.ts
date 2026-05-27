@@ -3,12 +3,13 @@ import { likesRepository } from "../repositories/likesRepository";
 
 export const likesService = {
 
-    async addLike(userId: string, entityId: string, status: LikeStatus): Promise<void> {
+    async addLike(userId: string, login: string, entityId: string, status: LikeStatus): Promise<void> {
 
         const newLike: RawLike = {
-            createdAt: new Date().toISOString(),
+            addedAt: new Date().toISOString(),
             status: status,
             userId: userId,
+            login: login,
             entityId: entityId
         }
 
