@@ -7,7 +7,7 @@ import { UserInputModel, UserOutputModel } from '../../../users/models/userTypes
 import { TestManager } from '../utils/test-manager'
 import { testingSetup } from '../../../testing/testing-setup-app'
 import { ObjectId } from 'mongodb'
-import { basicToken, invalidToken, validUserInput1, validUserInput2 } from '../utils/fixtures'
+import { basicToken, dateRegExp, invalidToken, validUserInput1, validUserInput2 } from '../utils/fixtures'
 
 
 describe('Users API endpoints tests', () => {
@@ -77,9 +77,27 @@ describe('Users API endpoints tests', () => {
 
         expect(res4.status).toBe(HTTPStatusCode.UNAUTHORIZED)
         expect(res5.status).toBe(HTTPStatusCode.UNAUTHORIZED)
-        })
+    })
 
-    it(`should return list of all users after some was created or deleted
+    it(`should return not found when user with provided id doesn't exist
+        DELETE /api/users/:userId
+        additional methods:
+        POST /api/users`, async () => {
+        const res1 = await usersTestManager.createEntity(
+            validUserInput1,
+            basicToken)
+        expect(res1.status).toBe(HTTPStatusCode.CREATED)
+
+        const userBody1 = res1.body
+
+        const res2 = await usersTestManager.deleteEntity(
+            basicToken,
+            `/${new ObjectId()}`
+        )
+        expect(res2.status).toBe(HTTPStatusCode.NOT_FOUND)
+    })
+
+    it(`should return correct list of all users after some was created or deleted
         GET /api/users
         additional methods: 
         POST /api/users
@@ -197,7 +215,7 @@ describe('Users API endpoints tests', () => {
             id: expect.any(String),
             login: validUserInput1.login,
             email: validUserInput1.email,
-            createdAt: expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)
+            createdAt: expect.stringMatching(dateRegExp)
         })
     })
 
@@ -238,6 +256,89 @@ describe('Users API endpoints tests', () => {
         expect(usersList1).toHaveLength(0)
     })
 
+    it(`should not create user with same login or email
+        POST /api/users
+        additional methods: 
+        GET /api/users`, async () => {
+
+        const sameLoginInput = {
+            ...validUserInput1,
+            email: 'anotheremail@mail.ru'
+        }
+
+        const sameEmailInput = {
+            ...validUserInput1,
+            login: 'Alex123'
+        }
+
+        const res0 = await usersTestManager.findEntity(
+            basicToken
+        )
+        expect(res0.status).toBe(HTTPStatusCode.OK)
+
+        const usersList0 = res0.body.items
+
+        expect(usersList0).toBeInstanceOf(Array)
+        expect(usersList0).toHaveLength(0)
+
+        const res1 = await usersTestManager.createEntity(
+            validUserInput1,
+            basicToken)
+        expect(res1.status).toBe(HTTPStatusCode.CREATED)
+
+        const createdUserData = res1.body
+
+        const res2 = await usersTestManager.findEntity(
+            basicToken
+        )
+        expect(res2.status).toBe(HTTPStatusCode.OK)
+
+        const usersList1 = res2.body.items
+
+        expect(usersList1).toBeInstanceOf(Array)
+        expect(usersList1).toHaveLength(1)
+        expect(usersList1).toContainEqual(createdUserData)
+
+         const res3 = await usersTestManager.createEntity(
+            sameLoginInput,
+            basicToken)
+        expect(res3.status).toBe(HTTPStatusCode.BAD_REQUEST)
+
+        expect(res3.body.errorsMessages).toEqual(
+            expect.arrayContaining([
+                {
+                    message: expect.any(String),
+                    field: 'login or email'
+                }
+            ])
+        )
+
+         const res4 = await usersTestManager.createEntity(
+            sameEmailInput,
+            basicToken)
+        expect(res4.status).toBe(HTTPStatusCode.BAD_REQUEST)
+
+        expect(res4.body.errorsMessages).toEqual(
+            expect.arrayContaining([
+                {
+                    message: expect.any(String),
+                    field: 'login or email'
+                }
+            ])
+        )
+
+        const res5 = await usersTestManager.findEntity(
+            basicToken
+        )
+        expect(res5.status).toBe(HTTPStatusCode.OK)
+
+        const usersList2 = res5.body.items
+
+        expect(usersList2).toBeInstanceOf(Array)
+        expect(usersList2).toHaveLength(1)
+        expect(usersList2).toContainEqual(createdUserData)
+    })
+
     it(`should delete created user
         DELETE /api/users/:userId
         additional methods: 
@@ -271,7 +372,6 @@ describe('Users API endpoints tests', () => {
         expect(usersList1).toBeInstanceOf(Array)
         expect(usersList1).toHaveLength(1)
         expect(usersList1).toContainEqual(createdUserData)
-
 
         const res3 = await usersTestManager.deleteEntity(
             basicToken,

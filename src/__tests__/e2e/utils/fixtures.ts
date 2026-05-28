@@ -3,6 +3,8 @@ import { CommentInputModel } from "../../../comments/models/commentTypes"
 import { adminPass, adminUserName } from "../../../core/settings/config"
 import { LoginInputModel, UserInputModel } from "../../../users/models/userTypes"
 
+export const dateRegExp = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)$/
+
 export const validUserInput1: UserInputModel ={
         login: 'Alex',
         password: '123123',

@@ -8,7 +8,7 @@ import { PaginationUserQuery } from "../../models/userTypes"
 import { usersQueryService } from "../../domain/users.query.service"
 
 export const readAllUsers = async (req: Request, res: Response) => {
-try {
+    try {
         const sanitizedQuery = matchedData<PaginationUserQuery>(req, {
             locations: ['query'],
             includeOptionals: true

@@ -17,3 +17,13 @@ expect(res.body.errorsMessages).toEqual(
         )
 - написать тесты на пагинацию
 - написать юнит тесты, в первую очередь проверить обработчик ошибок
+- для лайков отдельные тесты написать -
+GET bloggers-platform/api/:blogId/posts
+
+GET bloggers-platform/api/posts
+GET bloggers-platform/api/:postId
+PUT bloggers-platform/api/:postId/like-status
+GET bloggers-platform/api/:postId/comments
+
+GET bloggers-platform/api/comments/:id
+GET bloggers-platform/api/:commentId/like-status
